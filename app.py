@@ -39,6 +39,260 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+# Custom dark mode styling
+st.markdown("""
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap');
+
+    :root {
+        --background: oklch(0.1649 0.0352 281.8285);
+        --foreground: oklch(0.9513 0.0074 260.7315);
+        --card: oklch(0.2542 0.0611 281.1423);
+        --card-foreground: oklch(0.9513 0.0074 260.7315);
+        --popover: oklch(0.2542 0.0611 281.1423);
+        --popover-foreground: oklch(0.9513 0.0074 260.7315);
+        --primary: oklch(0.6726 0.2904 341.4084);
+        --primary-foreground: oklch(1.0000 0 0);
+        --secondary: oklch(0.2542 0.0611 281.1423);
+        --secondary-foreground: oklch(0.9513 0.0074 260.7315);
+        --muted: oklch(0.2123 0.0522 280.9917);
+        --muted-foreground: oklch(0.6245 0.0500 278.1046);
+        --accent: oklch(0.8903 0.1739 171.2690);
+        --accent-foreground: oklch(0.1649 0.0352 281.8285);
+        --destructive: oklch(0.6535 0.2348 34.0370);
+        --destructive-foreground: oklch(1.0000 0 0);
+        --border: oklch(0.3279 0.0832 280.7890);
+        --input: oklch(0.3279 0.0832 280.7890);
+        --ring: oklch(0.6726 0.2904 341.4084);
+        --sidebar: oklch(0.1649 0.0352 281.8285);
+        --sidebar-foreground: oklch(0.9513 0.0074 260.7315);
+        --sidebar-primary: oklch(0.6726 0.2904 341.4084);
+        --sidebar-accent: oklch(0.8903 0.1739 171.2690);
+        --sidebar-border: oklch(0.3279 0.0832 280.7890);
+        --font-sans: 'Outfit', sans-serif;
+        --font-mono: 'Fira Code', monospace;
+        --radius: 0.5rem;
+        --shadow-sm: 0px 4px 8px -2px hsl(0 0% 0% / 0.10), 0px 1px 2px -3px hsl(0 0% 0% / 0.10);
+        --shadow-md: 0px 4px 8px -2px hsl(0 0% 0% / 0.10), 0px 2px 4px -3px hsl(0 0% 0% / 0.10);
+        --shadow-lg: 0px 4px 8px -2px hsl(0 0% 0% / 0.10), 0px 4px 6px -3px hsl(0 0% 0% / 0.10);
+    }
+
+    /* Global font and background */
+    html, body, [class*="css"], .stApp {
+        font-family: var(--font-sans) !important;
+        background-color: var(--background) !important;
+        color: var(--foreground) !important;
+    }
+
+    /* Headings */
+    h1, h2, h3, h4, h5, h6 {
+        font-family: var(--font-sans) !important;
+        color: var(--foreground) !important;
+        font-weight: 600 !important;
+    }
+
+    /* Main content area */
+    .main .block-container {
+        background-color: var(--background) !important;
+        padding: 2rem 1rem !important;
+    }
+
+    /* Sidebar */
+    [data-testid="stSidebar"] {
+        background-color: var(--sidebar) !important;
+        border-right: 1px solid var(--sidebar-border) !important;
+    }
+
+    [data-testid="stSidebar"] * {
+        color: var(--sidebar-foreground) !important;
+    }
+
+    /* Cards and containers */
+    [data-testid="stExpander"],
+    [data-testid="stAlert"],
+    .stTabs [data-baseweb="tab-panel"] {
+        background-color: var(--card) !important;
+        border-radius: var(--radius) !important;
+        border: 1px solid var(--border) !important;
+        box-shadow: var(--shadow-sm) !important;
+        color: var(--card-foreground) !important;
+    }
+
+    /* Tabs */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 0.5rem;
+        background-color: transparent !important;
+    }
+
+    .stTabs [data-baseweb="tab"] {
+        background-color: var(--muted) !important;
+        color: var(--muted-foreground) !important;
+        border-radius: var(--radius) !important;
+        padding: 0.5rem 1rem !important;
+        font-weight: 500 !important;
+        border: 1px solid var(--border) !important;
+    }
+
+    .stTabs [aria-selected="true"] {
+        background-color: var(--primary) !important;
+        color: var(--primary-foreground) !important;
+        border-color: var(--primary) !important;
+    }
+
+    /* Input fields */
+    .stTextInput input,
+    .stTextArea textarea,
+    .stNumberInput input,
+    .stSelectbox select {
+        background-color: var(--input) !important;
+        color: var(--foreground) !important;
+        border: 1px solid var(--border) !important;
+        border-radius: var(--radius) !important;
+        font-family: var(--font-sans) !important;
+        padding: 0.5rem !important;
+    }
+
+    .stTextInput input:focus,
+    .stTextArea textarea:focus,
+    .stNumberInput input:focus,
+    .stSelectbox select:focus {
+        border-color: var(--ring) !important;
+        box-shadow: 0 0 0 2px var(--ring) !important;
+        outline: none !important;
+    }
+
+    /* Buttons */
+    .stButton button {
+        background-color: var(--primary) !important;
+        color: var(--primary-foreground) !important;
+        border: none !important;
+        border-radius: var(--radius) !important;
+        padding: 0.5rem 1.5rem !important;
+        font-weight: 600 !important;
+        font-family: var(--font-sans) !important;
+        box-shadow: var(--shadow-sm) !important;
+        transition: all 0.2s ease !important;
+    }
+
+    .stButton button:hover {
+        background-color: var(--accent) !important;
+        color: var(--accent-foreground) !important;
+        box-shadow: var(--shadow-md) !important;
+        transform: translateY(-1px) !important;
+    }
+
+    .stDownloadButton button {
+        background-color: var(--accent) !important;
+        color: var(--accent-foreground) !important;
+    }
+
+    /* Metrics */
+    [data-testid="stMetricValue"] {
+        color: var(--primary) !important;
+        font-weight: 700 !important;
+    }
+
+    [data-testid="stMetricLabel"] {
+        color: var(--muted-foreground) !important;
+        font-weight: 500 !important;
+    }
+
+    /* Info/Success/Warning/Error boxes */
+    .stAlert {
+        border-radius: var(--radius) !important;
+        padding: 1rem !important;
+    }
+
+    [data-baseweb="notification"] {
+        background-color: var(--card) !important;
+        border-left: 4px solid var(--primary) !important;
+    }
+
+    /* Code blocks */
+    code, pre {
+        font-family: var(--font-mono) !important;
+        background-color: var(--muted) !important;
+        color: var(--foreground) !important;
+        border-radius: var(--radius) !important;
+        padding: 0.2rem 0.4rem !important;
+    }
+
+    /* Checkbox and radio */
+    .stCheckbox label,
+    .stRadio label {
+        color: var(--foreground) !important;
+        font-family: var(--font-sans) !important;
+    }
+
+    /* Dataframe */
+    [data-testid="stDataFrame"] {
+        border-radius: var(--radius) !important;
+        overflow: hidden !important;
+        box-shadow: var(--shadow-sm) !important;
+    }
+
+    /* Multiselect */
+    .stMultiSelect [data-baseweb="tag"] {
+        background-color: var(--primary) !important;
+        color: var(--primary-foreground) !important;
+        border-radius: calc(var(--radius) - 2px) !important;
+    }
+
+    /* Slider */
+    .stSlider [data-baseweb="slider"] {
+        background-color: var(--muted) !important;
+    }
+
+    .stSlider [role="slider"] {
+        background-color: var(--primary) !important;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: var(--background);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: var(--muted);
+        border-radius: var(--radius);
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--primary);
+    }
+
+    /* Links */
+    a {
+        color: var(--primary) !important;
+        text-decoration: none !important;
+    }
+
+    a:hover {
+        color: var(--accent) !important;
+        text-decoration: underline !important;
+    }
+
+    /* Divider */
+    hr {
+        border-color: var(--border) !important;
+    }
+
+    /* Remove Streamlit branding elements */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+
+    /* Spinner */
+    .stSpinner > div {
+        border-top-color: var(--primary) !important;
+    }
+</style>
+""", unsafe_allow_html=True)
+
 # Initialize session state
 if "agents" not in st.session_state:
     st.session_state.agents = []

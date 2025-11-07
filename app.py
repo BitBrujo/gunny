@@ -447,7 +447,8 @@ if "generation_mode" not in st.session_state:
     st.session_state.generation_mode = "core_files"
 
 # Header
-st.markdown(f"<h1>{get_icon('target', 28)} Gunny - CrewAI Companion</h1>", unsafe_allow_html=True)
+st.markdown(f"<h1>{get_icon('target', 28)} Gunny</h1>", unsafe_allow_html=True)
+st.markdown("<p style='margin-top: -1rem; font-size: 0.9rem; color: var(--text-muted);'>CrewAI Companion</p>", unsafe_allow_html=True)
 
 # Sidebar
 with st.sidebar:

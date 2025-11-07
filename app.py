@@ -1,5 +1,5 @@
 """
-Gunny - CrewAI Project Generator
+Gunny - a CrewAI Companion
 
 A Streamlit application for creating complete CrewAI projects with all configuration options.
 """
@@ -37,11 +37,12 @@ st.set_page_config(
     page_title="Gunny - CrewAI Companion",
     page_icon=get_favicon_svg(),
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="expanded",
 )
 
 # Custom dark mode styling
-st.markdown("""
+st.markdown(
+    """
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap');
 
@@ -166,6 +167,8 @@ st.markdown("""
         gap: 0.5rem;
         background-color: transparent !important;
         border-bottom: none !important;
+        width: 100% !important;
+        display: flex !important;
     }
 
     .stTabs [data-baseweb="tab"] {
@@ -175,6 +178,8 @@ st.markdown("""
         padding: 0.5rem 1rem !important;
         font-weight: 500 !important;
         border: 1px solid var(--border) !important;
+        flex: 1 !important;
+        text-align: center !important;
     }
 
     .stTabs [aria-selected="true"] {
@@ -426,7 +431,9 @@ st.markdown("""
         border: 1px solid var(--border);
     }
 </style>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
 # Initialize session state
 if "agents" not in st.session_state:
@@ -447,7 +454,8 @@ if "generation_mode" not in st.session_state:
     st.session_state.generation_mode = "core_files"
 
 # Header - Brand box matching tabs width
-st.markdown("""
+st.markdown(
+    """
 <div style='
     background: linear-gradient(135deg, oklch(0.65 0.15 195) 0%, oklch(0.60 0.12 210) 100%);
     padding: 1rem 1.5rem;
@@ -456,10 +464,12 @@ st.markdown("""
     width: 100%;
     box-sizing: border-box;
 '>
-    <h1 style='margin: 0; font-size: 1.8rem; color: white;'>Gunny</h1>
+    <h1 style='margin: 0; font-size: 5rem; color: white;'>Gunny</h1>
     <p style='margin: 0.25rem 0 0 0; font-size: 0.9rem; color: rgba(255, 255, 255, 0.85);'>CrewAI Companion</p>
 </div>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
 # Sidebar
 with st.sidebar:
@@ -477,16 +487,18 @@ with st.sidebar:
 
 # Main tabs
 tool_count = sum(len(tools) for tools in TOOLS_CATALOG.values())
-tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs([
-    "Project Info",
-    "Agents",
-    "Tasks",
-    "Crew Config",
-    f"Tools ({tool_count})",
-    "Knowledge",
-    "ENV",
-    "Preview & Generate"
-])
+tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs(
+    [
+        "Project Info",
+        "Agents",
+        "Tasks",
+        "Crew Config",
+        f"Tools ({tool_count})",
+        "Knowledge",
+        "ENV",
+        "Preview & Generate",
+    ]
+)
 
 # Tab 1: Project Information
 with tab1:
@@ -496,7 +508,7 @@ with tab1:
         "Project Name *",
         value=st.session_state.get("project_name", ""),
         help="Name of your CrewAI project (use underscores for spaces)",
-        placeholder="my_awesome_crew"
+        placeholder="my_awesome_crew",
     )
     st.session_state.project_name = project_name
 
@@ -504,7 +516,7 @@ with tab1:
         "Project Description",
         value=st.session_state.get("project_description", ""),
         help="Brief description of what your crew does",
-        placeholder="A crew of AI agents that..."
+        placeholder="A crew of AI agents that...",
     )
     st.session_state.project_description = project_description
 
@@ -512,7 +524,7 @@ with tab1:
         "Python Version",
         options=["3.10", "3.11", "3.12"],
         index=0,
-        help="Minimum Python version for your project"
+        help="Minimum Python version for your project",
     )
     st.session_state.python_version = python_version
 
@@ -523,10 +535,12 @@ with tab1:
     generation_mode = st.radio(
         "What would you like to generate?",
         options=["core_files", "complete_project"],
-        format_func=lambda x: "Core Files Only" if x == "core_files" else "Complete Project",
+        format_func=lambda x: "Core Files Only"
+        if x == "core_files"
+        else "Complete Project",
         index=0 if st.session_state.generation_mode == "core_files" else 1,
         help="Core Files: generates only agents.yaml, tasks.yaml, crew.py, main.py for existing projects. Complete Project: generates full project structure with all boilerplate.",
-        horizontal=True
+        horizontal=True,
     )
     st.session_state.generation_mode = generation_mode
 
@@ -534,7 +548,8 @@ with tab1:
     st.markdown("### Project Structure Preview")
 
     if st.session_state.generation_mode == "core_files":
-        st.code(f"""
+        st.code(
+            f"""
 {project_name}/
 └── src/{project_name}/
     ├── main.py
@@ -542,9 +557,12 @@ with tab1:
     └── config/
         ├── agents.yaml
         └── tasks.yaml
-""", language="text")
+""",
+            language="text",
+        )
     else:
-        st.code(f"""
+        st.code(
+            f"""
 {project_name}/
 ├── .gitignore
 ├── .env
@@ -562,7 +580,9 @@ with tab1:
     │   └── custom_tool.py
     └── knowledge/
         └── README.md
-""", language="text")
+""",
+            language="text",
+        )
 
 # Tab 2: Agents Configuration
 with tab2:
@@ -572,14 +592,21 @@ with tab2:
     # Agent management buttons
     col1, col2, col3 = st.columns([1, 1, 4])
     with col1:
-        st.markdown(f"<div>{icon_button('plus', 'Add Agent')}</div>", unsafe_allow_html=True)
+        st.markdown(
+            f"<div>{icon_button('plus', 'Add Agent')}</div>", unsafe_allow_html=True
+        )
         if st.button("Add Agent", key="add_agent_btn"):
             st.session_state.agents.append({})
             st.rerun()
 
     with col2:
-        st.markdown(f"<div>{icon_button('minus', 'Remove Last')}</div>", unsafe_allow_html=True)
-        if st.button("Remove Last", key="remove_agent_btn") and len(st.session_state.agents) > 0:
+        st.markdown(
+            f"<div>{icon_button('minus', 'Remove Last')}</div>", unsafe_allow_html=True
+        )
+        if (
+            st.button("Remove Last", key="remove_agent_btn")
+            and len(st.session_state.agents) > 0
+        ):
             st.session_state.agents.pop()
             st.rerun()
 
@@ -593,10 +620,12 @@ with tab2:
 
             # Tools for this agent
             with st.expander(f"Tools for Agent {i + 1}", expanded=False):
-                agent_role = agent_config.get("role", f"Agent {i+1}")
+                agent_role = agent_config.get("role", f"Agent {i + 1}")
                 current_tools = st.session_state.tools_by_agent.get(agent_role, [])
 
-                st.write("Select tools for this agent (or configure all tools in the Tools tab)")
+                st.write(
+                    "Select tools for this agent (or configure all tools in the Tools tab)"
+                )
 
                 # Quick tool selection
                 selected = []
@@ -608,7 +637,7 @@ with tab2:
                         if st.checkbox(
                             tool_name,
                             value=tool_name in current_tools,
-                            key=f"agent_{i}_tool_{tool_name}"
+                            key=f"agent_{i}_tool_{tool_name}",
                         ):
                             selected.append(tool_name)
 
@@ -620,20 +649,34 @@ with tab3:
     st.markdown("Define tasks and assign them to agents.")
 
     # Get available agent roles
-    available_agents = [agent.get("role", f"Agent {i+1}") for i, agent in enumerate(st.session_state.agents) if agent.get("role")]
-    available_task_names = [task.get("name", f"task_{i+1}") for i, task in enumerate(st.session_state.tasks)]
+    available_agents = [
+        agent.get("role", f"Agent {i + 1}")
+        for i, agent in enumerate(st.session_state.agents)
+        if agent.get("role")
+    ]
+    available_task_names = [
+        task.get("name", f"task_{i + 1}")
+        for i, task in enumerate(st.session_state.tasks)
+    ]
 
     # Task management buttons
     col1, col2, col3 = st.columns([1, 1, 4])
     with col1:
-        st.markdown(f"<div>{icon_button('plus', 'Add Task')}</div>", unsafe_allow_html=True)
+        st.markdown(
+            f"<div>{icon_button('plus', 'Add Task')}</div>", unsafe_allow_html=True
+        )
         if st.button("Add Task", key="add_task_btn"):
             st.session_state.tasks.append({})
             st.rerun()
 
     with col2:
-        st.markdown(f"<div>{icon_button('minus', 'Remove Last')}</div>", unsafe_allow_html=True)
-        if st.button("Remove Last", key="remove_task_btn") and len(st.session_state.tasks) > 0:
+        st.markdown(
+            f"<div>{icon_button('minus', 'Remove Last')}</div>", unsafe_allow_html=True
+        )
+        if (
+            st.button("Remove Last", key="remove_task_btn")
+            and len(st.session_state.tasks) > 0
+        ):
             st.session_state.tasks.pop()
             st.rerun()
 
@@ -645,13 +688,12 @@ with tab3:
     elif len(st.session_state.tasks) > 0:
         for i in range(len(st.session_state.tasks)):
             # Get available tasks for context (excluding current task)
-            context_tasks = [name for j, name in enumerate(available_task_names) if j != i]
+            context_tasks = [
+                name for j, name in enumerate(available_task_names) if j != i
+            ]
 
             task_config = task_configuration_form(
-                i,
-                available_agents,
-                context_tasks,
-                st.session_state.tasks[i]
+                i, available_agents, context_tasks, st.session_state.tasks[i]
             )
             st.session_state.tasks[i] = task_config
 
@@ -666,7 +708,7 @@ with tab4:
     crew_name = st.text_input(
         "Crew Name",
         value=st.session_state.crew_config.get("name", "crew"),
-        help="Name for your crew instance"
+        help="Name for your crew instance",
     )
     st.session_state.crew_config["name"] = crew_name
 
@@ -674,21 +716,21 @@ with tab4:
         "Process Type",
         options=list(PROCESS_TYPES.keys()),
         format_func=lambda x: f"{x.capitalize()} - {PROCESS_TYPES[x]}",
-        help="How tasks are executed"
+        help="How tasks are executed",
     )
     st.session_state.crew_config["process"] = process
 
     verbose = st.checkbox(
         "Verbose Mode",
         value=st.session_state.crew_config.get("verbose", False),
-        help="Enable detailed logging"
+        help="Enable detailed logging",
     )
     st.session_state.crew_config["verbose"] = verbose
 
     cache = st.checkbox(
         "Enable Cache",
         value=st.session_state.crew_config.get("cache", True),
-        help="Cache results for efficiency"
+        help="Cache results for efficiency",
     )
     st.session_state.crew_config["cache"] = cache
 
@@ -699,25 +741,32 @@ with tab4:
     enable_langsmith = st.checkbox(
         "Enable LangSmith Tracing",
         value=st.session_state.get("enable_langsmith", False),
-        help="Enable LLM observability and debugging with LangSmith (free tier: 5k traces/month)"
+        help="Enable LLM observability and debugging with LangSmith (free tier: 5k traces/month)",
     )
     st.session_state.enable_langsmith = enable_langsmith
 
     if enable_langsmith:
         langsmith_project = st.text_input(
             "LangSmith Project Name",
-            value=st.session_state.get("langsmith_project", st.session_state.get("project_name", "my-crew-project")),
+            value=st.session_state.get(
+                "langsmith_project",
+                st.session_state.get("project_name", "my-crew-project"),
+            ),
             placeholder="my-crew-project",
-            help="Project name for organizing traces in LangSmith dashboard"
+            help="Project name for organizing traces in LangSmith dashboard",
         )
         st.session_state.langsmith_project = langsmith_project
 
         # Show mode-specific guidance
         generation_mode = st.session_state.get("generation_mode", "core_files")
         if generation_mode == "core_files":
-            st.warning("📋 **Core Files Mode**: Manual integration required. See instructions in the Preview & Generate tab.")
+            st.warning(
+                "📋 **Core Files Mode**: Manual integration required. See instructions in the Preview & Generate tab."
+            )
         else:
-            st.success("✅ **Complete Project Mode**: LangSmith will be auto-configured in .env and pyproject.toml")
+            st.success(
+                "✅ **Complete Project Mode**: LangSmith will be auto-configured in .env and pyproject.toml"
+            )
 
         st.info("Get your free API key at: https://smith.langchain.com")
 
@@ -728,14 +777,14 @@ with tab4:
     memory = st.checkbox(
         "Enable Memory",
         value=st.session_state.crew_config.get("memory", False),
-        help="Enable short and long-term memory"
+        help="Enable short and long-term memory",
     )
     st.session_state.crew_config["memory"] = memory
 
     planning = st.checkbox(
         "Enable Planning",
         value=st.session_state.crew_config.get("planning", False),
-        help="Enable autonomous planning"
+        help="Enable autonomous planning",
     )
     st.session_state.crew_config["planning"] = planning
 
@@ -743,7 +792,7 @@ with tab4:
         "Max RPM",
         min_value=0,
         value=st.session_state.crew_config.get("max_rpm") or 0,
-        help="Maximum requests per minute (0 = unlimited)"
+        help="Maximum requests per minute (0 = unlimited)",
     )
     if max_rpm > 0:
         st.session_state.crew_config["max_rpm"] = max_rpm
@@ -761,7 +810,7 @@ with tab4:
             "Manager LLM",
             value=st.session_state.crew_config.get("manager_llm", ""),
             help="LLM to use for the manager agent (e.g., 'gpt-4')",
-            placeholder="gpt-4"
+            placeholder="gpt-4",
         )
         st.session_state.crew_config["manager_llm"] = manager_llm
 
@@ -792,7 +841,10 @@ with tab6:
     col1, col2 = st.columns([1, 3])
 
     with col1:
-        st.markdown(f"<div>{icon_button('plus', 'Add Knowledge Source')}</div>", unsafe_allow_html=True)
+        st.markdown(
+            f"<div>{icon_button('plus', 'Add Knowledge Source')}</div>",
+            unsafe_allow_html=True,
+        )
         if st.button("Add Knowledge Source", key="add_knowledge_btn"):
             st.session_state.knowledge_sources.append({"type": "String", "config": {}})
             st.rerun()
@@ -804,7 +856,7 @@ with tab6:
                     "Source Type",
                     options=KNOWLEDGE_SOURCE_TYPES,
                     index=KNOWLEDGE_SOURCE_TYPES.index(source.get("type", "String")),
-                    key=f"knowledge_{i}_type"
+                    key=f"knowledge_{i}_type",
                 )
                 source["type"] = source_type
 
@@ -813,7 +865,7 @@ with tab6:
                         "Content",
                         value=source.get("config", {}).get("content", ""),
                         key=f"knowledge_{i}_content",
-                        help="Direct text content"
+                        help="Direct text content",
                     )
                     source["config"] = {"content": content}
                 else:
@@ -822,11 +874,14 @@ with tab6:
                         value=source.get("config", {}).get("path", ""),
                         key=f"knowledge_{i}_path",
                         help=f"Path to {source_type} file in knowledge/ directory",
-                        placeholder=f"knowledge/document.{source_type.lower()}"
+                        placeholder=f"knowledge/document.{source_type.lower()}",
                     )
                     source["config"] = {"path": file_path}
 
-                st.markdown(f"<div>{icon_button('trash-2', 'Remove')}</div>", unsafe_allow_html=True)
+                st.markdown(
+                    f"<div>{icon_button('trash-2', 'Remove')}</div>",
+                    unsafe_allow_html=True,
+                )
                 if st.button("Remove", key=f"knowledge_{i}_remove_btn"):
                     st.session_state.knowledge_sources.pop(i)
                     st.rerun()
@@ -835,8 +890,7 @@ with tab6:
     st.subheader("Embedder Configuration")
 
     use_embedder = st.checkbox(
-        "Configure Custom Embedder",
-        value=st.session_state.get("use_embedder", False)
+        "Configure Custom Embedder", value=st.session_state.get("use_embedder", False)
     )
     st.session_state.use_embedder = use_embedder
 
@@ -844,7 +898,7 @@ with tab6:
         embedder_provider = st.selectbox(
             "Embedder Provider",
             options=EMBEDDER_PROVIDERS,
-            help="Vector embedding provider"
+            help="Vector embedding provider",
         )
         st.session_state.embedder_provider = embedder_provider
 
@@ -861,11 +915,13 @@ with tab7:
         required_vars = check_required_env_vars(
             st.session_state.agents,
             st.session_state.selected_tools,
-            st.session_state.get("enable_langsmith", False)
+            st.session_state.get("enable_langsmith", False),
         )
 
         if required_vars:
-            st.info(f"Based on your configuration, you'll need: {', '.join(required_vars)}")
+            st.info(
+                f"Based on your configuration, you'll need: {', '.join(required_vars)}"
+            )
 
             for var in required_vars:
                 placeholder = "your_api_key_here"
@@ -876,19 +932,23 @@ with tab7:
                     value=current_value,
                     type="password",
                     help=f"API key for {var}",
-                    key=f"env_{var}"
+                    key=f"env_{var}",
                 )
                 st.session_state.env_vars[var] = env_value
         else:
-            st.info("No specific API keys detected. You can add custom environment variables below.")
-    st.markdown('</div>', unsafe_allow_html=True)
+            st.info(
+                "No specific API keys detected. You can add custom environment variables below."
+            )
+    st.markdown("</div>", unsafe_allow_html=True)
 
     # Section 2: Custom Environment Variables
     st.markdown('<div class="section-container">', unsafe_allow_html=True)
     st.subheader("Custom Environment Variables")
 
     custom_var_name = st.text_input("Variable Name", key="custom_env_name")
-    custom_var_value = st.text_input("Variable Value", type="password", key="custom_env_value")
+    custom_var_value = st.text_input(
+        "Variable Value", type="password", key="custom_env_value"
+    )
 
     if st.button("Add Custom Variable"):
         if custom_var_name and custom_var_value:
@@ -896,7 +956,7 @@ with tab7:
             st.success(f"Added {custom_var_name}")
         else:
             st.error("Please provide both name and value")
-    st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
 
     # Section 3: Enterprise Features
     st.markdown('<div class="section-container">', unsafe_allow_html=True)
@@ -905,13 +965,13 @@ with tab7:
     enterprise_apps = st.multiselect(
         "Enterprise App Integrations",
         options=ENTERPRISE_APPS,
-        help="Select enterprise applications to integrate"
+        help="Select enterprise applications to integrate",
     )
     st.session_state.enterprise_apps = enterprise_apps
 
     if enterprise_apps:
         st.info(f"Selected: {', '.join(enterprise_apps)}")
-    st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown("</div>", unsafe_allow_html=True)
 
 # Tab 8: Preview & Generate
 with tab8:
@@ -932,7 +992,7 @@ with tab8:
             project_name,
             st.session_state.agents,
             st.session_state.tasks,
-            st.session_state.crew_config
+            st.session_state.crew_config,
         )
 
         validation_messages(errors)
@@ -950,7 +1010,7 @@ with tab8:
                 st.session_state.get("python_version", "3.10"),
                 st.session_state.generation_mode,
                 st.session_state.get("enable_langsmith", False),
-                st.session_state.get("langsmith_project", "my-crew-project")
+                st.session_state.get("langsmith_project", "my-crew-project"),
             )
 
             # Create ZIP file
@@ -969,14 +1029,18 @@ with tab8:
                 file_name=zip_filename,
                 mime="application/zip",
                 use_container_width=True,
-                type="primary"
+                type="primary",
             )
 
             # Customize success message based on mode
             if st.session_state.generation_mode == "core_files":
-                st.success("Core files generated successfully! Download includes: agents.yaml, tasks.yaml, crew.py, main.py")
+                st.success(
+                    "Core files generated successfully! Download includes: agents.yaml, tasks.yaml, crew.py, main.py"
+                )
             else:
-                st.success("Project generated successfully! Download the ZIP file and extract it to get started.")
+                st.success(
+                    "Project generated successfully! Download the ZIP file and extract it to get started."
+                )
 
             st.markdown("---")
 
@@ -984,7 +1048,10 @@ with tab8:
             if "show_summary" not in st.session_state:
                 st.session_state.show_summary = False
 
-            if st.button("View Summary" if not st.session_state.show_summary else "Hide Summary", use_container_width=False):
+            if st.button(
+                "View Summary" if not st.session_state.show_summary else "Hide Summary",
+                use_container_width=False,
+            ):
                 st.session_state.show_summary = not st.session_state.show_summary
 
             if st.session_state.show_summary:
@@ -992,7 +1059,7 @@ with tab8:
                     project_name,
                     st.session_state.agents,
                     st.session_state.tasks,
-                    st.session_state.crew_config
+                    st.session_state.crew_config,
                 )
                 st.markdown(summary)
 
@@ -1002,12 +1069,18 @@ with tab8:
             col1, col2 = st.columns(2)
 
             with col1:
-                st.markdown(f"<h3>{icon_inline('file', 20)} agents.yaml</h3>", unsafe_allow_html=True)
+                st.markdown(
+                    f"<h3>{icon_inline('file', 20)} agents.yaml</h3>",
+                    unsafe_allow_html=True,
+                )
                 agents_yaml = generate_agents_yaml(st.session_state.agents)
                 st.code(agents_yaml, language="yaml")
 
             with col2:
-                st.markdown(f"<h3>{icon_inline('file', 20)} tasks.yaml</h3>", unsafe_allow_html=True)
+                st.markdown(
+                    f"<h3>{icon_inline('file', 20)} tasks.yaml</h3>",
+                    unsafe_allow_html=True,
+                )
                 tasks_yaml = generate_tasks_yaml(st.session_state.tasks)
                 st.code(tasks_yaml, language="yaml")
 
@@ -1016,18 +1089,24 @@ with tab8:
             col3, col4 = st.columns(2)
 
             with col3:
-                st.markdown(f"<h3>{icon_inline('code', 20)} crew.py</h3>", unsafe_allow_html=True)
+                st.markdown(
+                    f"<h3>{icon_inline('code', 20)} crew.py</h3>",
+                    unsafe_allow_html=True,
+                )
                 crew_py = generate_crew_py(
                     project_name,
                     st.session_state.agents,
                     st.session_state.tasks,
                     st.session_state.crew_config,
-                    st.session_state.tools_by_agent
+                    st.session_state.tools_by_agent,
                 )
                 st.code(crew_py, language="python")
 
             with col4:
-                st.markdown(f"<h3>{icon_inline('code', 20)} main.py</h3>", unsafe_allow_html=True)
+                st.markdown(
+                    f"<h3>{icon_inline('code', 20)} main.py</h3>",
+                    unsafe_allow_html=True,
+                )
                 input_vars = []  # Extract from descriptions
                 main_py = generate_main_py(project_name, input_vars)
                 st.code(main_py, language="python")
@@ -1035,11 +1114,21 @@ with tab8:
             st.markdown("---")
 
             # LangSmith Integration Instructions (Core Files mode only)
-            if st.session_state.get("enable_langsmith", False) and st.session_state.generation_mode == "core_files":
-                st.markdown(f"<h3>{icon_inline('activity', 20)} LangSmith Integration</h3>", unsafe_allow_html=True)
-                st.info("**Core Files Mode**: LangSmith tracing requires manual setup in your existing project.")
+            if (
+                st.session_state.get("enable_langsmith", False)
+                and st.session_state.generation_mode == "core_files"
+            ):
+                st.markdown(
+                    f"<h3>{icon_inline('activity', 20)} LangSmith Integration</h3>",
+                    unsafe_allow_html=True,
+                )
+                st.info(
+                    "**Core Files Mode**: LangSmith tracing requires manual setup in your existing project."
+                )
 
-                langsmith_project = st.session_state.get("langsmith_project", "my-crew-project")
+                langsmith_project = st.session_state.get(
+                    "langsmith_project", "my-crew-project"
+                )
 
                 st.markdown(f"""
 **Follow these steps to enable LangSmith tracing:**
@@ -1067,7 +1156,10 @@ with tab8:
 Traces will appear in your LangSmith dashboard for debugging and monitoring.
                 """)
                 st.markdown("---")
-            st.markdown(f"<h3>{icon_inline('rocket', 20)} Next Steps</h3>", unsafe_allow_html=True)
+            st.markdown(
+                f"<h3>{icon_inline('rocket', 20)} Next Steps</h3>",
+                unsafe_allow_html=True,
+            )
 
             if st.session_state.generation_mode == "core_files":
                 st.markdown(f"""

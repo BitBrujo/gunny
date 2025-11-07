@@ -471,8 +471,9 @@ st.markdown(
     """
 <div style='
     background: linear-gradient(135deg, oklch(0.65 0.15 195) 0%, oklch(0.60 0.12 210) 100%);
-    padding: 1rem 1.5rem;
+    padding: 3rem 1.5rem 2rem 1.5rem;
     border-radius: var(--radius);
+    margin-top: 2rem;
     margin-bottom: 0.5rem;
     width: 100%;
     box-sizing: border-box;

@@ -101,19 +101,30 @@ def agent_configuration_form(agent_index: int, agent_data: Optional[Dict[str, An
             help="Select the LLM provider for this agent"
         )
 
-        if llm_provider in LLM_PROVIDERS:
-            llm_model = st.selectbox(
-                "Model",
-                options=LLM_PROVIDERS[llm_provider],
-                key=f"agent_{agent_index}_llm_model",
-                help="Select the specific model"
+        col1, col2 = st.columns([1, 1])
+
+        with col1:
+            if llm_provider in LLM_PROVIDERS:
+                llm_model = st.selectbox(
+                    "Model (Preset)",
+                    options=LLM_PROVIDERS[llm_provider],
+                    key=f"agent_{agent_index}_llm_model",
+                    help="Select a preset model or enter custom name"
+                )
+
+        with col2:
+            custom_model = st.text_input(
+                "Custom Model Name",
+                key=f"agent_{agent_index}_llm_custom",
+                placeholder="Or enter custom model name",
+                help="Enter a custom model name (overrides preset selection)"
             )
 
-            if llm_model == "Enter custom model name":
-                llm_model = st.text_input(
-                    "Custom Model Name",
-                    key=f"agent_{agent_index}_llm_custom"
-                )
+        # Use custom model if provided, otherwise use selected preset
+        if custom_model:
+            llm_model = custom_model
+        elif llm_model == "Enter custom model name":
+            llm_model = None
 
     with st.expander("Advanced AI Features"):
         col1, col2 = st.columns(2)

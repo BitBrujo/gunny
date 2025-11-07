@@ -651,101 +651,94 @@ with tab4:
     st.header("Crew Configuration")
     st.markdown("Configure how your crew operates.")
 
-    col1, col2 = st.columns(2)
+    st.subheader("Basic Settings")
 
-    with col1:
-        st.subheader("Basic Settings")
+    crew_name = st.text_input(
+        "Crew Name",
+        value=st.session_state.crew_config.get("name", "crew"),
+        help="Name for your crew instance"
+    )
+    st.session_state.crew_config["name"] = crew_name
 
-        crew_name = st.text_input(
-            "Crew Name",
-            value=st.session_state.crew_config.get("name", "crew"),
-            help="Name for your crew instance"
-        )
-        st.session_state.crew_config["name"] = crew_name
+    process = st.selectbox(
+        "Process Type",
+        options=list(PROCESS_TYPES.keys()),
+        format_func=lambda x: f"{x.capitalize()} - {PROCESS_TYPES[x]}",
+        help="How tasks are executed"
+    )
+    st.session_state.crew_config["process"] = process
 
-        process = st.selectbox(
-            "Process Type",
-            options=list(PROCESS_TYPES.keys()),
-            format_func=lambda x: f"{x.capitalize()} - {PROCESS_TYPES[x]}",
-            help="How tasks are executed"
-        )
-        st.session_state.crew_config["process"] = process
+    verbose = st.checkbox(
+        "Verbose Mode",
+        value=st.session_state.crew_config.get("verbose", False),
+        help="Enable detailed logging"
+    )
+    st.session_state.crew_config["verbose"] = verbose
 
-        verbose = st.checkbox(
-            "Verbose Mode",
-            value=st.session_state.crew_config.get("verbose", False),
-            help="Enable detailed logging"
-        )
-        st.session_state.crew_config["verbose"] = verbose
-
-        cache = st.checkbox(
-            "Enable Cache",
-            value=st.session_state.crew_config.get("cache", True),
-            help="Cache results for efficiency"
-        )
-        st.session_state.crew_config["cache"] = cache
-
-    with col2:
-        st.subheader("Observability & Tracing")
-
-        enable_langsmith = st.checkbox(
-            "Enable LangSmith Tracing",
-            value=st.session_state.get("enable_langsmith", False),
-            help="Enable LLM observability and debugging with LangSmith (free tier: 5k traces/month)"
-        )
-        st.session_state.enable_langsmith = enable_langsmith
-
-        if enable_langsmith:
-            langsmith_project = st.text_input(
-                "LangSmith Project Name",
-                value=st.session_state.get("langsmith_project", st.session_state.get("project_name", "my-crew-project")),
-                placeholder="my-crew-project",
-                help="Project name for organizing traces in LangSmith dashboard"
-            )
-            st.session_state.langsmith_project = langsmith_project
-
-            # Show mode-specific guidance
-            generation_mode = st.session_state.get("generation_mode", "core_files")
-            if generation_mode == "core_files":
-                st.warning("📋 **Core Files Mode**: Manual integration required. See instructions in the Preview & Generate tab.")
-            else:
-                st.success("✅ **Complete Project Mode**: LangSmith will be auto-configured in .env and pyproject.toml")
-
-            st.info("Get your free API key at: https://smith.langchain.com")
+    cache = st.checkbox(
+        "Enable Cache",
+        value=st.session_state.crew_config.get("cache", True),
+        help="Cache results for efficiency"
+    )
+    st.session_state.crew_config["cache"] = cache
 
     st.markdown("---")
 
-    # Advanced Settings
+    st.subheader("Observability & Tracing")
+
+    enable_langsmith = st.checkbox(
+        "Enable LangSmith Tracing",
+        value=st.session_state.get("enable_langsmith", False),
+        help="Enable LLM observability and debugging with LangSmith (free tier: 5k traces/month)"
+    )
+    st.session_state.enable_langsmith = enable_langsmith
+
+    if enable_langsmith:
+        langsmith_project = st.text_input(
+            "LangSmith Project Name",
+            value=st.session_state.get("langsmith_project", st.session_state.get("project_name", "my-crew-project")),
+            placeholder="my-crew-project",
+            help="Project name for organizing traces in LangSmith dashboard"
+        )
+        st.session_state.langsmith_project = langsmith_project
+
+        # Show mode-specific guidance
+        generation_mode = st.session_state.get("generation_mode", "core_files")
+        if generation_mode == "core_files":
+            st.warning("📋 **Core Files Mode**: Manual integration required. See instructions in the Preview & Generate tab.")
+        else:
+            st.success("✅ **Complete Project Mode**: LangSmith will be auto-configured in .env and pyproject.toml")
+
+        st.info("Get your free API key at: https://smith.langchain.com")
+
+    st.markdown("---")
+
     st.subheader("Advanced Settings")
 
-    col3, col4 = st.columns(2)
+    memory = st.checkbox(
+        "Enable Memory",
+        value=st.session_state.crew_config.get("memory", False),
+        help="Enable short and long-term memory"
+    )
+    st.session_state.crew_config["memory"] = memory
 
-    with col3:
-        memory = st.checkbox(
-            "Enable Memory",
-            value=st.session_state.crew_config.get("memory", False),
-            help="Enable short and long-term memory"
-        )
-        st.session_state.crew_config["memory"] = memory
+    planning = st.checkbox(
+        "Enable Planning",
+        value=st.session_state.crew_config.get("planning", False),
+        help="Enable autonomous planning"
+    )
+    st.session_state.crew_config["planning"] = planning
 
-        planning = st.checkbox(
-            "Enable Planning",
-            value=st.session_state.crew_config.get("planning", False),
-            help="Enable autonomous planning"
-        )
-        st.session_state.crew_config["planning"] = planning
-
-    with col4:
-        max_rpm = st.number_input(
-            "Max RPM",
-            min_value=0,
-            value=st.session_state.crew_config.get("max_rpm") or 0,
-            help="Maximum requests per minute (0 = unlimited)"
-        )
-        if max_rpm > 0:
-            st.session_state.crew_config["max_rpm"] = max_rpm
-        else:
-            st.session_state.crew_config["max_rpm"] = None
+    max_rpm = st.number_input(
+        "Max RPM",
+        min_value=0,
+        value=st.session_state.crew_config.get("max_rpm") or 0,
+        help="Maximum requests per minute (0 = unlimited)"
+    )
+    if max_rpm > 0:
+        st.session_state.crew_config["max_rpm"] = max_rpm
+    else:
+        st.session_state.crew_config["max_rpm"] = None
 
     st.markdown("---")
 
@@ -847,12 +840,11 @@ with tab6:
 
 # Tab 7: ENV Configuration
 with tab7:
-    st.header("ENV Configuration")
+    st.header("Environment Variables")
+    st.markdown("Configure API keys and environment variables")
 
     # Section 1: Auto-Detected Environment Variables
     st.markdown('<div class="section-container">', unsafe_allow_html=True)
-    st.subheader("Environment Variables")
-    st.markdown("Configure API keys and environment variables")
 
     # Determine required env vars
     if st.session_state.agents:

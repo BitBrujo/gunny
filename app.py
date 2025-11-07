@@ -955,7 +955,7 @@ with tab7:
 
     # Section 1: Auto-Detected from Tools
     st.markdown('<div class="section-container">', unsafe_allow_html=True)
-    st.subheader("🔐 Auto-Detected from Tools")
+    st.subheader("Auto-Detected from Tools")
 
     tool_env_vars = get_tool_env_vars(st.session_state.selected_tools)
 
@@ -1012,7 +1012,7 @@ with tab7:
 
     # Section 2: Auto-Detected from LLMs
     st.markdown('<div class="section-container">', unsafe_allow_html=True)
-    st.subheader("🤖 Auto-Detected from LLMs")
+    st.subheader("Auto-Detected from LLMs")
 
     # Determine required env vars from agents
     if st.session_state.agents:
@@ -1049,7 +1049,7 @@ with tab7:
 
     # Section 3: Custom Environment Variables
     st.markdown('<div class="section-container">', unsafe_allow_html=True)
-    st.subheader("➕ Custom Environment Variables")
+    st.subheader("Custom Environment Variables")
 
     custom_var_name = st.text_input("Variable Name", key="custom_env_name")
     custom_var_value = st.text_input(
@@ -1066,7 +1066,7 @@ with tab7:
 
     # Section 4: Enterprise Features
     st.markdown('<div class="section-container">', unsafe_allow_html=True)
-    st.subheader("🏢 Enterprise Features")
+    st.subheader("Enterprise Features")
 
     enterprise_apps = st.multiselect(
         "Enterprise App Integrations",

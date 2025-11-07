@@ -336,10 +336,8 @@ def tools_selector(selected_tools: List[str] = None) -> List[str]:
 
                 # Create a card-style container for each tool
                 with st.container():
-                    # Checkbox with tool name and auth icon
+                    # Checkbox with tool name
                     tool_label = f"**{tool['name']}**"
-                    if tool.get('requires_auth', False):
-                        tool_label += " 🔐"
 
                     is_selected = st.checkbox(
                         tool_label,
@@ -348,7 +346,7 @@ def tools_selector(selected_tools: List[str] = None) -> List[str]:
                     )
 
                     # Display description below checkbox
-                    st.markdown(f"<p style='margin-top: -10px; margin-left: 24px; font-size: 0.9em; color: #666;'>{tool['description']}</p>", unsafe_allow_html=True)
+                    st.markdown(f"<p style='margin-top: -10px; margin-left: 24px; font-size: 0.9em; color: white; max-width: 300px;'>{tool['description']}</p>", unsafe_allow_html=True)
 
                     # Display required env vars if tool requires authentication
                     if tool.get('requires_auth', False) and tool.get('env_vars'):

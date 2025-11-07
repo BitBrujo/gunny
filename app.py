@@ -446,9 +446,14 @@ if "env_vars" not in st.session_state:
 if "generation_mode" not in st.session_state:
     st.session_state.generation_mode = "core_files"
 
-# Header
-st.markdown(f"<h1>{get_icon('target', 28)} Gunny</h1>", unsafe_allow_html=True)
-st.markdown("<p style='margin-top: -1rem; font-size: 0.9rem; color: var(--text-muted);'>CrewAI Companion</p>", unsafe_allow_html=True)
+# Header - Single line with title and subtitle
+st.markdown(f"""
+<div style='display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 1.5rem;'>
+    {get_icon('target', 28)}
+    <h1 style='display: inline; margin: 0;'>Gunny</h1>
+    <span style='font-size: 1rem; color: var(--text-muted);'>CrewAI Companion</span>
+</div>
+""", unsafe_allow_html=True)
 
 # Sidebar
 with st.sidebar:

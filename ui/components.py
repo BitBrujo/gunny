@@ -2,6 +2,7 @@
 
 import streamlit as st
 from typing import Dict, List, Any, Optional
+from ui.icons import icon_inline
 from utils.constants import (
     TOOLS_CATALOG,
     LLM_PROVIDERS,
@@ -358,10 +359,10 @@ def validation_messages(errors: Dict[str, List[str]]):
     has_errors = any(len(errs) > 0 for errs in errors.values())
 
     if not has_errors:
-        st.success("✅ Configuration is valid!")
+        st.success(f"{icon_inline('check-circle')} Configuration is valid!", unsafe_allow_html=True)
         return
 
-    st.error("❌ Configuration has errors:")
+    st.error(f"{icon_inline('x-circle')} Configuration has errors:", unsafe_allow_html=True)
 
     for category, error_list in errors.items():
         if error_list:

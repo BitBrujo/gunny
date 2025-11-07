@@ -30,11 +30,12 @@ from ui.components import (
     code_preview,
     validation_messages,
 )
+from ui.icons import get_icon, icon_inline, icon_tab, icon_button, get_favicon_svg
 
 # Page configuration
 st.set_page_config(
     page_title="Gunny - CrewAI Project Generator",
-    page_icon="🎯",
+    page_icon=get_favicon_svg(),
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -75,6 +76,12 @@ st.markdown("""
         --shadow-sm: 0px 4px 8px -2px hsl(0 0% 0% / 0.10), 0px 1px 2px -3px hsl(0 0% 0% / 0.10);
         --shadow-md: 0px 4px 8px -2px hsl(0 0% 0% / 0.10), 0px 2px 4px -3px hsl(0 0% 0% / 0.10);
         --shadow-lg: 0px 4px 8px -2px hsl(0 0% 0% / 0.10), 0px 4px 6px -3px hsl(0 0% 0% / 0.10);
+        --spacing-xs: 0.5rem;
+        --spacing-sm: 0.75rem;
+        --spacing-md: 1rem;
+        --spacing-lg: 1.5rem;
+        --spacing-xl: 2rem;
+        --spacing-2xl: 3rem;
     }
 
     /* Global font and background */
@@ -85,7 +92,23 @@ st.markdown("""
     }
 
     /* Headings */
-    h1, h2, h3, h4, h5, h6 {
+    h1 {
+        font-family: var(--font-sans) !important;
+        color: var(--foreground) !important;
+        font-weight: 600 !important;
+        margin-bottom: var(--spacing-lg) !important;
+        padding-bottom: var(--spacing-sm) !important;
+    }
+
+    h2, h3 {
+        font-family: var(--font-sans) !important;
+        color: var(--foreground) !important;
+        font-weight: 600 !important;
+        margin-top: var(--spacing-lg) !important;
+        margin-bottom: var(--spacing-md) !important;
+    }
+
+    h4, h5, h6 {
         font-family: var(--font-sans) !important;
         color: var(--foreground) !important;
         font-weight: 600 !important;
@@ -94,13 +117,15 @@ st.markdown("""
     /* Main content area */
     .main .block-container {
         background-color: var(--background) !important;
-        padding: 2rem 1rem !important;
+        padding: var(--spacing-xl) var(--spacing-lg) !important;
+        max-width: 1400px !important;
     }
 
     /* Sidebar */
     [data-testid="stSidebar"] {
         background-color: var(--sidebar) !important;
         border-right: 1px solid var(--sidebar-border) !important;
+        padding: var(--spacing-lg) var(--spacing-md) !important;
     }
 
     [data-testid="stSidebar"] * {
@@ -109,13 +134,31 @@ st.markdown("""
 
     /* Cards and containers */
     [data-testid="stExpander"],
-    [data-testid="stAlert"],
+    [data-testid="stAlert"] {
+        background-color: var(--card) !important;
+        border-radius: var(--radius) !important;
+        border: 1px solid var(--border) !important;
+        box-shadow: var(--shadow-sm) !important;
+        color: var(--card-foreground) !important;
+        margin-bottom: var(--spacing-md) !important;
+    }
+
+    [data-testid="stExpander"] > div {
+        padding: var(--spacing-md) !important;
+    }
+
+    [data-testid="stExpanderDetails"] {
+        padding: var(--spacing-md) var(--spacing-lg) !important;
+    }
+
     .stTabs [data-baseweb="tab-panel"] {
         background-color: var(--card) !important;
         border-radius: var(--radius) !important;
         border: 1px solid var(--border) !important;
         box-shadow: var(--shadow-sm) !important;
         color: var(--card-foreground) !important;
+        padding: var(--spacing-lg) !important;
+        margin-top: var(--spacing-md) !important;
     }
 
     /* Tabs */
@@ -140,6 +183,10 @@ st.markdown("""
     }
 
     /* Input fields */
+    .stTextInput, .stTextArea, .stNumberInput, .stSelectbox {
+        margin-bottom: var(--spacing-md) !important;
+    }
+
     .stTextInput input,
     .stTextArea textarea,
     .stNumberInput input,
@@ -149,7 +196,7 @@ st.markdown("""
         border: 1px solid var(--border) !important;
         border-radius: var(--radius) !important;
         font-family: var(--font-sans) !important;
-        padding: 0.5rem !important;
+        padding: var(--spacing-sm) var(--spacing-md) !important;
     }
 
     .stTextInput input:focus,
@@ -162,12 +209,16 @@ st.markdown("""
     }
 
     /* Buttons */
+    .stButton, .stDownloadButton {
+        margin: var(--spacing-xs) var(--spacing-xs) !important;
+    }
+
     .stButton button {
         background-color: var(--primary) !important;
         color: var(--primary-foreground) !important;
         border: none !important;
         border-radius: var(--radius) !important;
-        padding: 0.5rem 1.5rem !important;
+        padding: var(--spacing-sm) var(--spacing-lg) !important;
         font-weight: 600 !important;
         font-family: var(--font-sans) !important;
         box-shadow: var(--shadow-sm) !important;
@@ -187,6 +238,14 @@ st.markdown("""
     }
 
     /* Metrics */
+    [data-testid="stMetric"] {
+        background-color: var(--card) !important;
+        padding: var(--spacing-md) !important;
+        border-radius: var(--radius) !important;
+        border: 1px solid var(--border) !important;
+        margin: var(--spacing-sm) 0 !important;
+    }
+
     [data-testid="stMetricValue"] {
         color: var(--primary) !important;
         font-weight: 700 !important;
@@ -200,7 +259,8 @@ st.markdown("""
     /* Info/Success/Warning/Error boxes */
     .stAlert {
         border-radius: var(--radius) !important;
-        padding: 1rem !important;
+        padding: var(--spacing-md) var(--spacing-lg) !important;
+        margin: var(--spacing-md) 0 !important;
     }
 
     [data-baseweb="notification"] {
@@ -209,15 +269,30 @@ st.markdown("""
     }
 
     /* Code blocks */
-    code, pre {
+    code {
+        font-family: var(--font-mono) !important;
+        background-color: var(--muted) !important;
+        color: var(--foreground) !important;
+        border-radius: calc(var(--radius) - 2px) !important;
+        padding: 0.2rem 0.5rem !important;
+    }
+
+    pre {
         font-family: var(--font-mono) !important;
         background-color: var(--muted) !important;
         color: var(--foreground) !important;
         border-radius: var(--radius) !important;
-        padding: 0.2rem 0.4rem !important;
+        padding: var(--spacing-md) var(--spacing-lg) !important;
+        margin: var(--spacing-md) 0 !important;
+        overflow-x: auto !important;
     }
 
     /* Checkbox and radio */
+    .stCheckbox, .stRadio {
+        padding: var(--spacing-xs) 0 !important;
+        margin: var(--spacing-xs) 0 !important;
+    }
+
     .stCheckbox label,
     .stRadio label {
         color: var(--foreground) !important;
@@ -236,6 +311,13 @@ st.markdown("""
         background-color: var(--primary) !important;
         color: var(--primary-foreground) !important;
         border-radius: calc(var(--radius) - 2px) !important;
+        padding: var(--spacing-xs) var(--spacing-sm) !important;
+        margin: var(--spacing-xs) !important;
+    }
+
+    /* Columns */
+    [data-testid="column"] {
+        padding: 0 var(--spacing-sm) !important;
     }
 
     /* Slider */
@@ -280,6 +362,7 @@ st.markdown("""
     /* Divider */
     hr {
         border-color: var(--border) !important;
+        margin: var(--spacing-lg) 0 !important;
     }
 
     /* Remove Streamlit branding elements */
@@ -310,7 +393,7 @@ if "env_vars" not in st.session_state:
     st.session_state.env_vars = {}
 
 # Header
-st.title("🎯 Gunny - CrewAI Project Generator")
+st.markdown(f"<h1>{get_icon('target', 28)} Gunny - CrewAI Project Generator</h1>", unsafe_allow_html=True)
 st.markdown("### Build complete CrewAI projects with all configuration options")
 
 # Sidebar
@@ -330,14 +413,14 @@ with st.sidebar:
 
 # Main tabs
 tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs([
-    "📋 Project Info",
-    "🤖 Agents",
-    "📝 Tasks",
-    "⚙️ Crew Config",
-    "🔧 Tools",
-    "📚 Knowledge",
-    "🚀 Advanced",
-    "👁️ Preview & Generate"
+    "Project Info",
+    "Agents",
+    "Tasks",
+    "Crew Config",
+    "Tools",
+    "Knowledge",
+    "Advanced",
+    "Preview & Generate"
 ])
 
 # Tab 1: Project Information
@@ -402,12 +485,14 @@ with tab2:
     # Agent management buttons
     col1, col2, col3 = st.columns([1, 1, 4])
     with col1:
-        if st.button("➕ Add Agent"):
+        st.markdown(f"<div>{icon_button('plus', 'Add Agent')}</div>", unsafe_allow_html=True)
+        if st.button("Add Agent", key="add_agent_btn"):
             st.session_state.agents.append({})
             st.rerun()
 
     with col2:
-        if st.button("➖ Remove Last Agent") and len(st.session_state.agents) > 0:
+        st.markdown(f"<div>{icon_button('minus', 'Remove Last')}</div>", unsafe_allow_html=True)
+        if st.button("Remove Last", key="remove_agent_btn") and len(st.session_state.agents) > 0:
             st.session_state.agents.pop()
             st.rerun()
 
@@ -415,14 +500,14 @@ with tab2:
 
     # Display agent forms
     if len(st.session_state.agents) == 0:
-        st.info("👆 Click 'Add Agent' to create your first agent")
+        st.info(f"{icon_inline('arrow-up')} Click 'Add Agent' to create your first agent", unsafe_allow_html=True)
     else:
         for i in range(len(st.session_state.agents)):
             agent_config = agent_configuration_form(i, st.session_state.agents[i])
             st.session_state.agents[i] = agent_config
 
             # Tools for this agent
-            with st.expander(f"🔧 Tools for Agent {i + 1}"):
+            with st.expander(f"{icon_inline('wrench')} Tools for Agent {i + 1}", expanded=False):
                 agent_role = agent_config.get("role", f"Agent {i+1}")
                 current_tools = st.session_state.tools_by_agent.get(agent_role, [])
 
@@ -458,12 +543,14 @@ with tab3:
     # Task management buttons
     col1, col2, col3 = st.columns([1, 1, 4])
     with col1:
-        if st.button("➕ Add Task"):
+        st.markdown(f"<div>{icon_button('plus', 'Add Task')}</div>", unsafe_allow_html=True)
+        if st.button("Add Task", key="add_task_btn"):
             st.session_state.tasks.append({})
             st.rerun()
 
     with col2:
-        if st.button("➖ Remove Last Task") and len(st.session_state.tasks) > 0:
+        st.markdown(f"<div>{icon_button('minus', 'Remove Last')}</div>", unsafe_allow_html=True)
+        if st.button("Remove Last", key="remove_task_btn") and len(st.session_state.tasks) > 0:
             st.session_state.tasks.pop()
             st.rerun()
 
@@ -471,9 +558,9 @@ with tab3:
 
     # Check if agents exist
     if len(available_agents) == 0:
-        st.warning("⚠️ Please create at least one agent first in the Agents tab")
+        st.warning(f"{icon_inline('alert-triangle')} Please create at least one agent first in the Agents tab", unsafe_allow_html=True)
     elif len(st.session_state.tasks) == 0:
-        st.info("👆 Click 'Add Task' to create your first task")
+        st.info(f"{icon_inline('arrow-up')} Click 'Add Task' to create your first task", unsafe_allow_html=True)
     else:
         for i in range(len(st.session_state.tasks)):
             # Get available tasks for context (excluding current task)
@@ -575,13 +662,13 @@ with tab5:
     st.header("Tools Configuration")
     st.markdown("Select tools available to your agents.")
 
-    st.info(f"💡 Total tools available: {sum(len(tools) for tools in TOOLS_CATALOG.values())}")
+    st.info(f"{icon_inline('lightbulb')} Total tools available: {sum(len(tools) for tools in TOOLS_CATALOG.values())}", unsafe_allow_html=True)
 
     selected_tools = tools_selector(st.session_state.selected_tools)
     st.session_state.selected_tools = selected_tools
 
     if selected_tools:
-        st.success(f"✅ {len(selected_tools)} tools selected")
+        st.success(f"{icon_inline('check-circle')} {len(selected_tools)} tools selected", unsafe_allow_html=True)
 
         with st.expander("View Selected Tools"):
             for tool in selected_tools:
@@ -597,14 +684,15 @@ with tab6:
     col1, col2 = st.columns([1, 3])
 
     with col1:
-        if st.button("➕ Add Knowledge Source"):
+        st.markdown(f"<div>{icon_button('plus', 'Add Knowledge Source')}</div>", unsafe_allow_html=True)
+        if st.button("Add Knowledge Source", key="add_knowledge_btn"):
             st.session_state.knowledge_sources.append({"type": "String", "config": {}})
             st.rerun()
 
     st.markdown("---")
 
     if len(st.session_state.knowledge_sources) == 0:
-        st.info("👆 Click 'Add Knowledge Source' to add knowledge to your crew")
+        st.info(f"{icon_inline('arrow-up')} Click 'Add Knowledge Source' to add knowledge to your crew", unsafe_allow_html=True)
     else:
         for i, source in enumerate(st.session_state.knowledge_sources):
             with st.expander(f"Knowledge Source {i + 1}", expanded=True):
@@ -634,7 +722,8 @@ with tab6:
                     )
                     source["config"] = {"path": file_path}
 
-                if st.button("🗑️ Remove", key=f"knowledge_{i}_remove"):
+                st.markdown(f"<div>{icon_button('trash-2', 'Remove')}</div>", unsafe_allow_html=True)
+                if st.button("Remove", key=f"knowledge_{i}_remove_btn"):
                     st.session_state.knowledge_sources.pop(i)
                     st.rerun()
 
@@ -718,11 +807,11 @@ with tab8:
     project_name = st.session_state.get("project_name", "")
 
     if not project_name:
-        st.error("⚠️ Please provide a project name in the Project Info tab")
+        st.error(f"{icon_inline('alert-triangle')} Please provide a project name in the Project Info tab", unsafe_allow_html=True)
     elif len(st.session_state.agents) == 0:
-        st.error("⚠️ Please create at least one agent")
+        st.error(f"{icon_inline('alert-triangle')} Please create at least one agent", unsafe_allow_html=True)
     elif len(st.session_state.tasks) == 0:
-        st.error("⚠️ Please create at least one task")
+        st.error(f"{icon_inline('alert-triangle')} Please create at least one task", unsafe_allow_html=True)
     else:
         # Validate configuration
         is_valid, errors = validate_complete_configuration(
@@ -741,12 +830,12 @@ with tab8:
             col1, col2 = st.columns(2)
 
             with col1:
-                st.subheader("📄 agents.yaml")
+                st.markdown(f"<h3>{icon_inline('file', 20)} agents.yaml</h3>", unsafe_allow_html=True)
                 agents_yaml = generate_agents_yaml(st.session_state.agents)
                 st.code(agents_yaml, language="yaml")
 
             with col2:
-                st.subheader("📄 tasks.yaml")
+                st.markdown(f"<h3>{icon_inline('file', 20)} tasks.yaml</h3>", unsafe_allow_html=True)
                 tasks_yaml = generate_tasks_yaml(st.session_state.tasks)
                 st.code(tasks_yaml, language="yaml")
 
@@ -755,7 +844,7 @@ with tab8:
             col3, col4 = st.columns(2)
 
             with col3:
-                st.subheader("🐍 crew.py")
+                st.markdown(f"<h3>{icon_inline('code', 20)} crew.py</h3>", unsafe_allow_html=True)
                 crew_py = generate_crew_py(
                     project_name,
                     st.session_state.agents,
@@ -766,7 +855,7 @@ with tab8:
                 st.code(crew_py, language="python")
 
             with col4:
-                st.subheader("🐍 main.py")
+                st.markdown(f"<h3>{icon_inline('code', 20)} main.py</h3>", unsafe_allow_html=True)
                 input_vars = []  # Extract from descriptions
                 main_py = generate_main_py(project_name, input_vars)
                 st.code(main_py, language="python")
@@ -774,7 +863,7 @@ with tab8:
             st.markdown("---")
 
             # Generate and download
-            st.subheader("🎉 Generate Project")
+            st.markdown(f"<h3>{icon_inline('sparkles', 20)} Generate Project</h3>", unsafe_allow_html=True)
 
             col1, col2, col3 = st.columns([2, 1, 1])
 
@@ -782,7 +871,8 @@ with tab8:
                 st.markdown("Your project is ready to be generated!")
 
             with col2:
-                if st.button("📊 View Summary", use_container_width=True):
+                st.markdown(f"<div>{icon_button('bar-chart', 'View Summary')}</div>", unsafe_allow_html=True)
+                if st.button("View Summary", use_container_width=True, key="view_summary_btn"):
                     summary = generate_project_summary(
                         project_name,
                         st.session_state.agents,
@@ -808,17 +898,17 @@ with tab8:
                 zip_data = create_zip_file(project_files, project_name)
 
                 st.download_button(
-                    label="⬇️ Download ZIP",
+                    label=f"{icon_inline('download', 16)} Download ZIP",
                     data=zip_data,
                     file_name=f"{project_name}.zip",
                     mime="application/zip",
                     use_container_width=True
                 )
 
-            st.success("✅ Project generated successfully! Download the ZIP file and extract it to get started.")
+            st.success(f"{icon_inline('check-circle')} Project generated successfully! Download the ZIP file and extract it to get started.", unsafe_allow_html=True)
 
             st.markdown("---")
-            st.subheader("🚀 Next Steps")
+            st.markdown(f"<h3>{icon_inline('rocket', 20)} Next Steps</h3>", unsafe_allow_html=True)
             st.markdown(f"""
 1. **Extract the ZIP file**
 2. **Navigate to the project directory:**
@@ -840,7 +930,7 @@ with tab8:
 # Footer
 st.markdown("---")
 st.markdown(
-    "<div style='text-align: center'>Made with ❤️ using Streamlit | "
+    f"<div style='text-align: center'>Made with {get_icon('heart', 16, 'var(--destructive)')} using Streamlit | "
     "Powered by CrewAI | <a href='https://github.com/yourusername/gunny'>GitHub</a></div>",
     unsafe_allow_html=True
 )

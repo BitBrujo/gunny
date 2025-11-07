@@ -446,12 +446,18 @@ if "env_vars" not in st.session_state:
 if "generation_mode" not in st.session_state:
     st.session_state.generation_mode = "core_files"
 
-# Header - Single line with title and subtitle
-st.markdown(f"""
-<div style='display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 1.5rem;'>
-    {get_icon('target', 28)}
-    <h1 style='display: inline; margin: 0;'>Gunny</h1>
-    <span style='font-size: 1rem; color: var(--text-muted);'>CrewAI Companion</span>
+# Header - Brand box matching tabs width
+st.markdown("""
+<div style='
+    background: linear-gradient(135deg, oklch(0.65 0.15 195) 0%, oklch(0.60 0.12 210) 100%);
+    padding: 1rem 1.5rem;
+    border-radius: var(--radius);
+    margin-bottom: 0.5rem;
+    width: 100%;
+    box-sizing: border-box;
+'>
+    <h1 style='margin: 0; font-size: 1.8rem; color: white;'>Gunny</h1>
+    <p style='margin: 0.25rem 0 0 0; font-size: 0.9rem; color: rgba(255, 255, 255, 0.85);'>CrewAI Companion</p>
 </div>
 """, unsafe_allow_html=True)
 

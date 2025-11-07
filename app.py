@@ -455,12 +455,13 @@ with st.sidebar:
     )
 
 # Main tabs
+tool_count = sum(len(tools) for tools in TOOLS_CATALOG.values())
 tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs([
     "Project Info",
     "Agents",
     "Tasks",
     "Crew Config",
-    "Tools",
+    f"Tools ({tool_count})",
     "Knowledge",
     "Advanced",
     "Preview & Generate"
@@ -470,33 +471,29 @@ tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs([
 with tab1:
     st.header("Project Information")
 
-    col1, col2 = st.columns(2)
+    project_name = st.text_input(
+        "Project Name *",
+        value=st.session_state.get("project_name", ""),
+        help="Name of your CrewAI project (use underscores for spaces)",
+        placeholder="my_awesome_crew"
+    )
+    st.session_state.project_name = project_name
 
-    with col1:
-        project_name = st.text_input(
-            "Project Name *",
-            value=st.session_state.get("project_name", ""),
-            help="Name of your CrewAI project (use underscores for spaces)",
-            placeholder="my_awesome_crew"
-        )
-        st.session_state.project_name = project_name
+    project_description = st.text_area(
+        "Project Description",
+        value=st.session_state.get("project_description", ""),
+        help="Brief description of what your crew does",
+        placeholder="A crew of AI agents that..."
+    )
+    st.session_state.project_description = project_description
 
-        python_version = st.selectbox(
-            "Python Version",
-            options=["3.10", "3.11", "3.12"],
-            index=0,
-            help="Minimum Python version for your project"
-        )
-        st.session_state.python_version = python_version
-
-    with col2:
-        project_description = st.text_area(
-            "Project Description",
-            value=st.session_state.get("project_description", ""),
-            help="Brief description of what your crew does",
-            placeholder="A crew of AI agents that..."
-        )
-        st.session_state.project_description = project_description
+    python_version = st.selectbox(
+        "Python Version",
+        options=["3.10", "3.11", "3.12"],
+        index=0,
+        help="Minimum Python version for your project"
+    )
+    st.session_state.python_version = python_version
 
     st.markdown("---")
 
@@ -511,11 +508,6 @@ with tab1:
         horizontal=True
     )
     st.session_state.generation_mode = generation_mode
-
-    if generation_mode == "core_files":
-        st.info("Core Files mode generates only the essential CrewAI files for adding to existing projects")
-    else:
-        st.info("Complete Project mode generates a full project structure ready to run")
 
     st.markdown("---")
     st.markdown("### Project Structure Preview")
@@ -573,9 +565,7 @@ with tab2:
     st.markdown("---")
 
     # Display agent forms
-    if len(st.session_state.agents) == 0:
-        st.info("Click 'Add Agent' to create your first agent")
-    else:
+    if len(st.session_state.agents) > 0:
         for i in range(len(st.session_state.agents)):
             agent_config = agent_configuration_form(i, st.session_state.agents[i])
             st.session_state.agents[i] = agent_config
@@ -632,10 +622,8 @@ with tab3:
 
     # Check if agents exist
     if len(available_agents) == 0:
-        st.warning("Please create at least one agent first in the Agents tab")
-    elif len(st.session_state.tasks) == 0:
-        st.info("Click 'Add Task' to create your first task")
-    else:
+        pass
+    elif len(st.session_state.tasks) > 0:
         for i in range(len(st.session_state.tasks)):
             # Get available tasks for context (excluding current task)
             context_tasks = [name for j, name in enumerate(available_task_names) if j != i]
@@ -689,8 +677,41 @@ with tab4:
         st.session_state.crew_config["cache"] = cache
 
     with col2:
-        st.subheader("Advanced Settings")
+        st.subheader("Observability & Tracing")
 
+        enable_langsmith = st.checkbox(
+            "Enable LangSmith Tracing",
+            value=st.session_state.get("enable_langsmith", False),
+            help="Enable LLM observability and debugging with LangSmith (free tier: 5k traces/month)"
+        )
+        st.session_state.enable_langsmith = enable_langsmith
+
+        if enable_langsmith:
+            langsmith_project = st.text_input(
+                "LangSmith Project Name",
+                value=st.session_state.get("langsmith_project", st.session_state.get("project_name", "my-crew-project")),
+                placeholder="my-crew-project",
+                help="Project name for organizing traces in LangSmith dashboard"
+            )
+            st.session_state.langsmith_project = langsmith_project
+
+            # Show mode-specific guidance
+            generation_mode = st.session_state.get("generation_mode", "core_files")
+            if generation_mode == "core_files":
+                st.warning("📋 **Core Files Mode**: Manual integration required. See instructions in the Preview & Generate tab.")
+            else:
+                st.success("✅ **Complete Project Mode**: LangSmith will be auto-configured in .env and pyproject.toml")
+
+            st.info("Get your free API key at: https://smith.langchain.com")
+
+    st.markdown("---")
+
+    # Advanced Settings
+    st.subheader("Advanced Settings")
+
+    col3, col4 = st.columns(2)
+
+    with col3:
         memory = st.checkbox(
             "Enable Memory",
             value=st.session_state.crew_config.get("memory", False),
@@ -705,6 +726,7 @@ with tab4:
         )
         st.session_state.crew_config["planning"] = planning
 
+    with col4:
         max_rpm = st.number_input(
             "Max RPM",
             min_value=0,
@@ -715,36 +737,6 @@ with tab4:
             st.session_state.crew_config["max_rpm"] = max_rpm
         else:
             st.session_state.crew_config["max_rpm"] = None
-
-    st.markdown("---")
-
-    # LangSmith Observability
-    st.subheader("Observability & Tracing")
-
-    enable_langsmith = st.checkbox(
-        "Enable LangSmith Tracing",
-        value=st.session_state.get("enable_langsmith", False),
-        help="Enable LLM observability and debugging with LangSmith (free tier: 5k traces/month)"
-    )
-    st.session_state.enable_langsmith = enable_langsmith
-
-    if enable_langsmith:
-        langsmith_project = st.text_input(
-            "LangSmith Project Name",
-            value=st.session_state.get("langsmith_project", st.session_state.get("project_name", "my-crew-project")),
-            placeholder="my-crew-project",
-            help="Project name for organizing traces in LangSmith dashboard"
-        )
-        st.session_state.langsmith_project = langsmith_project
-
-        # Show mode-specific guidance
-        generation_mode = st.session_state.get("generation_mode", "core_files")
-        if generation_mode == "core_files":
-            st.warning("📋 **Core Files Mode**: Manual integration required. See instructions in the Preview & Generate tab.")
-        else:
-            st.success("✅ **Complete Project Mode**: LangSmith will be auto-configured in .env and pyproject.toml")
-
-        st.info("Get your free API key at: https://smith.langchain.com")
 
     st.markdown("---")
 
@@ -765,8 +757,6 @@ with tab4:
 with tab5:
     st.header("Tools Configuration")
     st.markdown("Select tools available to your agents.")
-
-    st.info(f"Total tools available: {sum(len(tools) for tools in TOOLS_CATALOG.values())}")
 
     selected_tools = tools_selector(st.session_state.selected_tools)
     st.session_state.selected_tools = selected_tools
@@ -795,9 +785,7 @@ with tab6:
 
     st.markdown("---")
 
-    if len(st.session_state.knowledge_sources) == 0:
-        st.info("Click 'Add Knowledge Source' to add knowledge to your crew")
-    else:
+    if len(st.session_state.knowledge_sources) > 0:
         for i, source in enumerate(st.session_state.knowledge_sources):
             with st.expander(f"Knowledge Source {i + 1}", expanded=True):
                 source_type = st.selectbox(

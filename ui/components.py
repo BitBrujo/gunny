@@ -225,7 +225,6 @@ def task_configuration_form(
                 help="Which agent should execute this task"
             )
         else:
-            st.warning("No agents available. Please create at least one agent first.")
             agent = None
 
     with st.expander("Dependencies & Execution"):

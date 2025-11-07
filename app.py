@@ -472,9 +472,9 @@ with tab1:
     st.session_state.generation_mode = generation_mode
 
     if generation_mode == "core_files":
-        st.info(f"{icon_inline('info')} Core Files mode generates only the essential CrewAI files for adding to existing projects", unsafe_allow_html=True)
+        st.info("💡 Core Files mode generates only the essential CrewAI files for adding to existing projects")
     else:
-        st.info(f"{icon_inline('info')} Complete Project mode generates a full project structure ready to run", unsafe_allow_html=True)
+        st.info("💡 Complete Project mode generates a full project structure ready to run")
 
     st.markdown("---")
     st.markdown("### Project Structure Preview")
@@ -533,7 +533,7 @@ with tab2:
 
     # Display agent forms
     if len(st.session_state.agents) == 0:
-        st.info(f"{icon_inline('arrow-up')} Click 'Add Agent' to create your first agent", unsafe_allow_html=True)
+        st.info("⬆️ Click 'Add Agent' to create your first agent")
     else:
         for i in range(len(st.session_state.agents)):
             agent_config = agent_configuration_form(i, st.session_state.agents[i])
@@ -591,9 +591,9 @@ with tab3:
 
     # Check if agents exist
     if len(available_agents) == 0:
-        st.warning(f"{icon_inline('alert-triangle')} Please create at least one agent first in the Agents tab", unsafe_allow_html=True)
+        st.warning("⚠️ Please create at least one agent first in the Agents tab")
     elif len(st.session_state.tasks) == 0:
-        st.info(f"{icon_inline('arrow-up')} Click 'Add Task' to create your first task", unsafe_allow_html=True)
+        st.info("⬆️ Click 'Add Task' to create your first task")
     else:
         for i in range(len(st.session_state.tasks)):
             # Get available tasks for context (excluding current task)
@@ -695,13 +695,13 @@ with tab5:
     st.header("Tools Configuration")
     st.markdown("Select tools available to your agents.")
 
-    st.info(f"{icon_inline('lightbulb')} Total tools available: {sum(len(tools) for tools in TOOLS_CATALOG.values())}", unsafe_allow_html=True)
+    st.info(f"💡 Total tools available: {sum(len(tools) for tools in TOOLS_CATALOG.values())}")
 
     selected_tools = tools_selector(st.session_state.selected_tools)
     st.session_state.selected_tools = selected_tools
 
     if selected_tools:
-        st.success(f"{icon_inline('check-circle')} {len(selected_tools)} tools selected", unsafe_allow_html=True)
+        st.success(f"✅ {len(selected_tools)} tools selected")
 
         with st.expander("View Selected Tools"):
             for tool in selected_tools:
@@ -725,7 +725,7 @@ with tab6:
     st.markdown("---")
 
     if len(st.session_state.knowledge_sources) == 0:
-        st.info(f"{icon_inline('arrow-up')} Click 'Add Knowledge Source' to add knowledge to your crew", unsafe_allow_html=True)
+        st.info("⬆️ Click 'Add Knowledge Source' to add knowledge to your crew")
     else:
         for i, source in enumerate(st.session_state.knowledge_sources):
             with st.expander(f"Knowledge Source {i + 1}", expanded=True):
@@ -840,11 +840,11 @@ with tab8:
     project_name = st.session_state.get("project_name", "")
 
     if not project_name:
-        st.error(f"{icon_inline('alert-triangle')} Please provide a project name in the Project Info tab", unsafe_allow_html=True)
+        st.error("⚠️ Please provide a project name in the Project Info tab")
     elif len(st.session_state.agents) == 0:
-        st.error(f"{icon_inline('alert-triangle')} Please create at least one agent", unsafe_allow_html=True)
+        st.error("⚠️ Please create at least one agent")
     elif len(st.session_state.tasks) == 0:
-        st.error(f"{icon_inline('alert-triangle')} Please create at least one task", unsafe_allow_html=True)
+        st.error("⚠️ Please create at least one task")
     else:
         # Validate configuration
         is_valid, errors = validate_complete_configuration(
@@ -947,9 +947,9 @@ with tab8:
 
             # Customize success message based on mode
             if st.session_state.generation_mode == "core_files":
-                st.success(f"{icon_inline('check-circle')} Core files generated successfully! Download includes: agents.yaml, tasks.yaml, crew.py, main.py", unsafe_allow_html=True)
+                st.success("✅ Core files generated successfully! Download includes: agents.yaml, tasks.yaml, crew.py, main.py")
             else:
-                st.success(f"{icon_inline('check-circle')} Project generated successfully! Download the ZIP file and extract it to get started.", unsafe_allow_html=True)
+                st.success("✅ Project generated successfully! Download the ZIP file and extract it to get started.")
 
             st.markdown("---")
             st.markdown(f"<h3>{icon_inline('rocket', 20)} Next Steps</h3>", unsafe_allow_html=True)

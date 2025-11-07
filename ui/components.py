@@ -359,10 +359,10 @@ def validation_messages(errors: Dict[str, List[str]]):
     has_errors = any(len(errs) > 0 for errs in errors.values())
 
     if not has_errors:
-        st.success(f"{icon_inline('check-circle')} Configuration is valid!", unsafe_allow_html=True)
+        st.success("✅ Configuration is valid!")
         return
 
-    st.error(f"{icon_inline('x-circle')} Configuration has errors:", unsafe_allow_html=True)
+    st.error("❌ Configuration has errors:")
 
     for category, error_list in errors.items():
         if error_list:

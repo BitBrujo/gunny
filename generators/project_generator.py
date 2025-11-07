@@ -223,36 +223,32 @@ def generate_project_summary(
     Returns:
         Formatted summary string
     """
-    summary = f"""# Project Summary: {project_name}
+    summary = f"""**Project:** {project_name}
 
-## Configuration Overview
+**Agents:** {len(agents)} | **Tasks:** {len(tasks)} | **Process:** {crew_config.get('process', 'sequential').capitalize()}
 
-**Agents:** {len(agents)}
-**Tasks:** {len(tasks)}
-**Process:** {crew_config.get('process', 'sequential').capitalize()}
-
-## Agents
+**Agents:**
 """
 
     for i, agent in enumerate(agents, 1):
-        summary += f"\n### {i}. {agent['role']}\n"
-        summary += f"- **Goal:** {agent['goal']}\n"
-        summary += f"- **Backstory:** {agent['backstory'][:100]}...\n"
+        summary += f"\n**{i}. {agent['role']}**\n"
+        summary += f"- Goal: {agent['goal']}\n"
+        summary += f"- Backstory: {agent['backstory'][:100]}...\n"
 
-    summary += "\n## Tasks\n"
+    summary += "\n**Tasks:**\n"
 
     for i, task in enumerate(tasks, 1):
         task_name = task.get('name', f'Task {i}')
-        summary += f"\n### {i}. {task_name}\n"
-        summary += f"- **Agent:** {task['agent']}\n"
-        summary += f"- **Description:** {task['description'][:100]}...\n"
+        summary += f"\n**{i}. {task_name}**\n"
+        summary += f"- Agent: {task['agent']}\n"
+        summary += f"- Description: {task['description'][:100]}...\n"
         if task.get('output_file'):
-            summary += f"- **Output File:** {task['output_file']}\n"
+            summary += f"- Output File: {task['output_file']}\n"
 
-    summary += "\n## Crew Configuration\n"
-    summary += f"- **Process Type:** {crew_config.get('process', 'sequential').capitalize()}\n"
-    summary += f"- **Memory:** {'Enabled' if crew_config.get('memory') else 'Disabled'}\n"
-    summary += f"- **Planning:** {'Enabled' if crew_config.get('planning') else 'Disabled'}\n"
-    summary += f"- **Verbose:** {'Enabled' if crew_config.get('verbose') else 'Disabled'}\n"
+    summary += "\n**Crew Configuration:**\n"
+    summary += f"- Process Type: {crew_config.get('process', 'sequential').capitalize()}\n"
+    summary += f"- Memory: {'Enabled' if crew_config.get('memory') else 'Disabled'}\n"
+    summary += f"- Planning: {'Enabled' if crew_config.get('planning') else 'Disabled'}\n"
+    summary += f"- Verbose: {'Enabled' if crew_config.get('verbose') else 'Disabled'}\n"
 
     return summary

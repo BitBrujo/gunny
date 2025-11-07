@@ -602,8 +602,6 @@ with tab2:
 
                 st.session_state.tools_by_agent[agent_role] = selected
 
-            st.markdown("---")
-
 # Tab 3: Tasks Configuration
 with tab3:
     st.header("Task Configuration")
@@ -644,12 +642,12 @@ with tab3:
                 st.session_state.tasks[i]
             )
             st.session_state.tasks[i] = task_config
-            st.markdown("---")
 
 # Tab 4: Crew Configuration
 with tab4:
     st.header("Crew Configuration")
     st.markdown("Configure how your crew operates.")
+    st.markdown("---")
 
     st.subheader("Basic Settings")
 
@@ -759,6 +757,7 @@ with tab4:
 with tab5:
     st.header("Tools Configuration")
     st.markdown("Select tools available to your agents.")
+    st.markdown("---")
 
     selected_tools = tools_selector(st.session_state.selected_tools)
     st.session_state.selected_tools = selected_tools
@@ -774,6 +773,7 @@ with tab5:
 with tab6:
     st.header("Knowledge Base Configuration")
     st.markdown("Add knowledge sources for your agents.")
+    st.markdown("---")
 
     st.subheader("Knowledge Sources")
 
@@ -784,8 +784,6 @@ with tab6:
         if st.button("Add Knowledge Source", key="add_knowledge_btn"):
             st.session_state.knowledge_sources.append({"type": "String", "config": {}})
             st.rerun()
-
-    st.markdown("---")
 
     if len(st.session_state.knowledge_sources) > 0:
         for i, source in enumerate(st.session_state.knowledge_sources):
@@ -928,6 +926,64 @@ with tab8:
         validation_messages(errors)
 
         if is_valid:
+            # Generate project files for download button
+            project_files = generate_project_structure(
+                project_name,
+                st.session_state.project_description,
+                st.session_state.agents,
+                st.session_state.tasks,
+                st.session_state.crew_config,
+                st.session_state.tools_by_agent,
+                st.session_state.env_vars,
+                st.session_state.get("python_version", "3.10"),
+                st.session_state.generation_mode,
+                st.session_state.get("enable_langsmith", False),
+                st.session_state.get("langsmith_project", "my-crew-project")
+            )
+
+            # Create ZIP file
+            zip_data = create_zip_file(project_files, project_name)
+
+            # Customize filename based on mode
+            if st.session_state.generation_mode == "core_files":
+                zip_filename = f"{project_name}_core.zip"
+            else:
+                zip_filename = f"{project_name}.zip"
+
+            # Download button at top
+            st.download_button(
+                label="Download ZIP",
+                data=zip_data,
+                file_name=zip_filename,
+                mime="application/zip",
+                use_container_width=True,
+                type="primary"
+            )
+
+            # Customize success message based on mode
+            if st.session_state.generation_mode == "core_files":
+                st.success("Core files generated successfully! Download includes: agents.yaml, tasks.yaml, crew.py, main.py")
+            else:
+                st.success("Project generated successfully! Download the ZIP file and extract it to get started.")
+
+            st.markdown("---")
+
+            # View Summary - toggleable
+            if "show_summary" not in st.session_state:
+                st.session_state.show_summary = False
+
+            if st.button("View Summary" if not st.session_state.show_summary else "Hide Summary", use_container_width=False):
+                st.session_state.show_summary = not st.session_state.show_summary
+
+            if st.session_state.show_summary:
+                summary = generate_project_summary(
+                    project_name,
+                    st.session_state.agents,
+                    st.session_state.tasks,
+                    st.session_state.crew_config
+                )
+                st.markdown(summary)
+
             st.markdown("---")
 
             # Generate preview
@@ -999,66 +1055,6 @@ with tab8:
 Traces will appear in your LangSmith dashboard for debugging and monitoring.
                 """)
                 st.markdown("---")
-
-            # Generate and download
-            st.markdown(f"<h3>{icon_inline('sparkles', 20)} Generate Project</h3>", unsafe_allow_html=True)
-
-            col1, col2, col3 = st.columns([2, 1, 1])
-
-            with col1:
-                st.markdown("Your project is ready to be generated!")
-
-            with col2:
-                st.markdown(f"<div>{icon_button('bar-chart', 'View Summary')}</div>", unsafe_allow_html=True)
-                if st.button("View Summary", use_container_width=True, key="view_summary_btn"):
-                    summary = generate_project_summary(
-                        project_name,
-                        st.session_state.agents,
-                        st.session_state.tasks,
-                        st.session_state.crew_config
-                    )
-                    st.markdown(summary)
-
-            with col3:
-                # Generate project files
-                project_files = generate_project_structure(
-                    project_name,
-                    st.session_state.project_description,
-                    st.session_state.agents,
-                    st.session_state.tasks,
-                    st.session_state.crew_config,
-                    st.session_state.tools_by_agent,
-                    st.session_state.env_vars,
-                    st.session_state.get("python_version", "3.10"),
-                    st.session_state.generation_mode,
-                    st.session_state.get("enable_langsmith", False),
-                    st.session_state.get("langsmith_project", "my-crew-project")
-                )
-
-                # Create ZIP file
-                zip_data = create_zip_file(project_files, project_name)
-
-                # Customize filename based on mode
-                if st.session_state.generation_mode == "core_files":
-                    zip_filename = f"{project_name}_core.zip"
-                else:
-                    zip_filename = f"{project_name}.zip"
-
-                st.download_button(
-                    label=f"{icon_inline('download', 16)} Download ZIP",
-                    data=zip_data,
-                    file_name=zip_filename,
-                    mime="application/zip",
-                    use_container_width=True
-                )
-
-            # Customize success message based on mode
-            if st.session_state.generation_mode == "core_files":
-                st.success("Core files generated successfully! Download includes: agents.yaml, tasks.yaml, crew.py, main.py")
-            else:
-                st.success("Project generated successfully! Download the ZIP file and extract it to get started.")
-
-            st.markdown("---")
             st.markdown(f"<h3>{icon_inline('rocket', 20)} Next Steps</h3>", unsafe_allow_html=True)
 
             if st.session_state.generation_mode == "core_files":

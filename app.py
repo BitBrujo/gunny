@@ -607,51 +607,10 @@ with tab2:
     # Agent management buttons
     st.markdown(
         """<style>
-        /* Container alignment */
-        .stHorizontalBlock:has(button[key="add_agent_btn"]) {
-            align-items: center !important;
-            display: flex !important;
-        }
-        .stHorizontalBlock:has(button[key="add_agent_btn"]) .stColumn {
-            display: flex !important;
-            align-items: center !important;
-        }
-        .stHorizontalBlock:has(button[key="add_agent_btn"]) .stVerticalBlock {
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            height: 100% !important;
-        }
-        .stHorizontalBlock:has(button[key="add_agent_btn"]) .stElementContainer {
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-        }
-        .stHorizontalBlock:has(button[key="add_agent_btn"]) .stMarkdown {
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            margin: 0 !important;
-        }
-        .stHorizontalBlock:has(button[key="add_agent_btn"]) .stMarkdown [data-testid="stMarkdownContainer"] {
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-        .stHorizontalBlock:has(button[key="add_agent_btn"]) .stMarkdown [data-testid="stMarkdownContainer"] > div {
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-        /* Button styling */
-        div[data-testid="column"]:has(button[key="add_agent_btn"]) .stButton,
-        div[data-testid="column"]:has(button[key="remove_agent_btn"]) .stButton {
-            margin: 0 !important;
-            padding: 0 !important;
-        }
         button[key="add_agent_btn"], button[key="remove_agent_btn"] {
             height: 3rem !important;
             min-height: 3rem !important;
             max-height: 3rem !important;
-            margin: 0 !important;
             padding: 0.75rem !important;
         }
         button[key="add_agent_btn"] p, button[key="remove_agent_btn"] p {
@@ -665,22 +624,12 @@ with tab2:
         </style>""",
         unsafe_allow_html=True
     )
-    col1, col2, col3, col4 = st.columns([0.8, 0.3, 0.3, 3.6])
+    col1, col2, col3 = st.columns([0.3, 0.3, 4.4])
     with col1:
-        st.markdown(
-            """<div style='display: flex; justify-content: center; align-items: center; width: 100%;'>
-                <div style='background: oklch(0.6726 0.2904 341.4084); padding: 0.75rem 2rem; border-radius: 50px;
-                            color: white; font-weight: 600; font-size: 1.25rem; text-align: center;
-                            display: inline-flex; align-items: center; justify-content: center;
-                            height: 3rem; box-sizing: border-box; white-space: nowrap;'>Agent</div>
-               </div>""",
-            unsafe_allow_html=True
-        )
-    with col2:
         if st.button("➕", key="add_agent_btn", help="Add Agent", use_container_width=True):
             st.session_state.agents.append({})
             st.rerun()
-    with col3:
+    with col2:
         if st.button("➖", key="remove_agent_btn", help="Remove Last Agent", use_container_width=True) and len(st.session_state.agents) > 0:
             st.session_state.agents.pop()
             st.rerun()
@@ -737,51 +686,10 @@ with tab3:
     # Task management buttons
     st.markdown(
         """<style>
-        /* Container alignment */
-        .stHorizontalBlock:has(button[key="add_task_btn"]) {
-            align-items: center !important;
-            display: flex !important;
-        }
-        .stHorizontalBlock:has(button[key="add_task_btn"]) .stColumn {
-            display: flex !important;
-            align-items: center !important;
-        }
-        .stHorizontalBlock:has(button[key="add_task_btn"]) .stVerticalBlock {
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            height: 100% !important;
-        }
-        .stHorizontalBlock:has(button[key="add_task_btn"]) .stElementContainer {
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-        }
-        .stHorizontalBlock:has(button[key="add_task_btn"]) .stMarkdown {
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            margin: 0 !important;
-        }
-        .stHorizontalBlock:has(button[key="add_task_btn"]) .stMarkdown [data-testid="stMarkdownContainer"] {
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-        .stHorizontalBlock:has(button[key="add_task_btn"]) .stMarkdown [data-testid="stMarkdownContainer"] > div {
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-        /* Button styling */
-        div[data-testid="column"]:has(button[key="add_task_btn"]) .stButton,
-        div[data-testid="column"]:has(button[key="remove_task_btn"]) .stButton {
-            margin: 0 !important;
-            padding: 0 !important;
-        }
         button[key="add_task_btn"], button[key="remove_task_btn"] {
             height: 3rem !important;
             min-height: 3rem !important;
             max-height: 3rem !important;
-            margin: 0 !important;
             padding: 0.75rem !important;
         }
         button[key="add_task_btn"] p, button[key="remove_task_btn"] p {
@@ -795,22 +703,12 @@ with tab3:
         </style>""",
         unsafe_allow_html=True
     )
-    col1, col2, col3, col4 = st.columns([0.8, 0.3, 0.3, 3.6])
+    col1, col2, col3 = st.columns([0.3, 0.3, 4.4])
     with col1:
-        st.markdown(
-            """<div style='display: flex; justify-content: center; align-items: center; width: 100%;'>
-                <div style='background: oklch(0.6726 0.2904 341.4084); padding: 0.75rem 2rem; border-radius: 50px;
-                            color: white; font-weight: 600; font-size: 1.25rem; text-align: center;
-                            display: inline-flex; align-items: center; justify-content: center;
-                            height: 3rem; box-sizing: border-box; white-space: nowrap;'>Task</div>
-               </div>""",
-            unsafe_allow_html=True
-        )
-    with col2:
         if st.button("➕", key="add_task_btn", help="Add Task", use_container_width=True):
             st.session_state.tasks.append({})
             st.rerun()
-    with col3:
+    with col2:
         if st.button("➖", key="remove_task_btn", help="Remove Last Task", use_container_width=True) and len(st.session_state.tasks) > 0:
             st.session_state.tasks.pop()
             st.rerun()

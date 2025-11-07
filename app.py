@@ -96,7 +96,7 @@ st.markdown("""
         font-family: var(--font-sans) !important;
         color: var(--foreground) !important;
         font-weight: 600 !important;
-        margin-bottom: var(--spacing-lg) !important;
+        margin-bottom: var(--spacing-md) !important;
         padding-bottom: var(--spacing-sm) !important;
     }
 
@@ -104,8 +104,8 @@ st.markdown("""
         font-family: var(--font-sans) !important;
         color: var(--foreground) !important;
         font-weight: 600 !important;
-        margin-top: var(--spacing-lg) !important;
-        margin-bottom: var(--spacing-md) !important;
+        margin-top: var(--spacing-md) !important;
+        margin-bottom: var(--spacing-sm) !important;
     }
 
     h4, h5, h6 {
@@ -117,7 +117,7 @@ st.markdown("""
     /* Main content area */
     .main .block-container {
         background-color: var(--background) !important;
-        padding: var(--spacing-xl) var(--spacing-lg) !important;
+        padding: var(--spacing-md) var(--spacing-sm) !important;
         max-width: 1400px !important;
     }
 
@@ -125,7 +125,7 @@ st.markdown("""
     [data-testid="stSidebar"] {
         background-color: var(--sidebar) !important;
         border-right: 1px solid var(--sidebar-border) !important;
-        padding: var(--spacing-lg) var(--spacing-md) !important;
+        padding: var(--spacing-md) var(--spacing-sm) !important;
     }
 
     [data-testid="stSidebar"] * {
@@ -140,7 +140,7 @@ st.markdown("""
         border: 1px solid var(--border) !important;
         box-shadow: var(--shadow-sm) !important;
         color: var(--card-foreground) !important;
-        margin-bottom: var(--spacing-md) !important;
+        margin-bottom: var(--spacing-sm) !important;
     }
 
     [data-testid="stExpander"] > div {
@@ -148,7 +148,7 @@ st.markdown("""
     }
 
     [data-testid="stExpanderDetails"] {
-        padding: var(--spacing-md) var(--spacing-lg) !important;
+        padding: var(--spacing-sm) var(--spacing-md) !important;
     }
 
     .stTabs [data-baseweb="tab-panel"] {
@@ -157,7 +157,7 @@ st.markdown("""
         border: 1px solid var(--border) !important;
         box-shadow: var(--shadow-sm) !important;
         color: var(--card-foreground) !important;
-        padding: var(--spacing-lg) !important;
+        padding: var(--spacing-md) !important;
         margin-top: var(--spacing-md) !important;
     }
 
@@ -201,7 +201,7 @@ st.markdown("""
 
     /* Input fields */
     .stTextInput, .stTextArea, .stNumberInput, .stSelectbox {
-        margin-bottom: var(--spacing-md) !important;
+        margin-bottom: var(--spacing-sm) !important;
     }
 
     .stTextInput input,
@@ -235,7 +235,7 @@ st.markdown("""
         color: var(--primary-foreground) !important;
         border: none !important;
         border-radius: var(--radius) !important;
-        padding: var(--spacing-sm) var(--spacing-lg) !important;
+        padding: var(--spacing-sm) var(--spacing-md) !important;
         font-weight: 600 !important;
         font-family: var(--font-sans) !important;
         box-shadow: var(--shadow-sm) !important;
@@ -257,7 +257,7 @@ st.markdown("""
     /* Metrics */
     [data-testid="stMetric"] {
         background-color: var(--card) !important;
-        padding: var(--spacing-md) !important;
+        padding: var(--spacing-sm) !important;
         border-radius: var(--radius) !important;
         border: 1px solid var(--border) !important;
         margin: var(--spacing-sm) 0 !important;
@@ -276,8 +276,8 @@ st.markdown("""
     /* Info/Success/Warning/Error boxes */
     .stAlert {
         border-radius: var(--radius) !important;
-        padding: var(--spacing-md) var(--spacing-lg) !important;
-        margin: var(--spacing-md) 0 !important;
+        padding: var(--spacing-sm) var(--spacing-md) !important;
+        margin: var(--spacing-sm) 0 !important;
     }
 
     [data-baseweb="notification"] {
@@ -306,8 +306,8 @@ st.markdown("""
         background-color: var(--muted) !important;
         color: var(--foreground) !important;
         border-radius: var(--radius) !important;
-        padding: var(--spacing-md) var(--spacing-lg) !important;
-        margin: var(--spacing-md) 0 !important;
+        padding: var(--spacing-sm) var(--spacing-md) !important;
+        margin: var(--spacing-sm) 0 !important;
         overflow-x: auto !important;
     }
 
@@ -360,7 +360,7 @@ st.markdown("""
 
     /* Columns */
     [data-testid="column"] {
-        padding: 0 var(--spacing-sm) !important;
+        padding: 0 var(--spacing-xs) !important;
     }
 
     /* Slider */
@@ -405,7 +405,7 @@ st.markdown("""
     /* Divider */
     hr {
         border-color: var(--border) !important;
-        margin: var(--spacing-lg) 0 !important;
+        margin: var(--spacing-md) 0 !important;
     }
 
     /* Remove Streamlit branding elements */

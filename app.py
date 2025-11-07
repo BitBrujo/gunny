@@ -14,8 +14,11 @@ from utils.constants import (
     ENTERPRISE_APPS,
     ENV_VARIABLES,
     TOOLS_CATALOG,
+    TESTED_CREWAI_VERSIONS,
+    LATEST_TESTED_VERSION,
 )
 from utils.validators import validate_complete_configuration, check_required_env_vars
+from utils.version_checker import get_version_info
 from generators.project_generator import (
     generate_project_structure,
     create_zip_file,
@@ -494,6 +497,20 @@ with st.sidebar:
     st.markdown("**Project Status**")
     st.metric("Agents", len(st.session_state.agents))
     st.metric("Tasks", len(st.session_state.tasks))
+    st.markdown("---")
+
+    # CrewAI Version Check
+    version, is_compatible, message = get_version_info(
+        TESTED_CREWAI_VERSIONS,
+        LATEST_TESTED_VERSION
+    )
+
+    if message:
+        if is_compatible:
+            st.success(message)
+        else:
+            st.warning(message)
+
     st.markdown("---")
     st.markdown("### About Gunny")
     st.info(

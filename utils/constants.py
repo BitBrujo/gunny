@@ -677,6 +677,16 @@ LLM_PROVIDERS = {
     "Other": ["Enter custom model name"],
 }
 
+# CrewAI Version Compatibility
+# These versions have been tested with Gunny and are known to work correctly
+TESTED_CREWAI_VERSIONS = [
+    "0.1.0", "0.2.0", "0.3.0", "0.4.0",
+    "0.10.0", "0.20.0", "0.30.0", "0.40.0",
+    "0.50.0", "0.60.0", "0.70.0", "0.80.0",
+    "0.86.0"
+]
+LATEST_TESTED_VERSION = "0.86.0"
+
 # Process Types
 PROCESS_TYPES = {
     "sequential": "Tasks executed one after another in order",

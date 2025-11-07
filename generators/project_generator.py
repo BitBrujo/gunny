@@ -65,7 +65,9 @@ def generate_project_structure(
     tools_by_agent: Dict[str, List[str]],
     env_vars: Dict[str, str],
     python_version: str = "3.10",
-    generation_mode: str = "complete_project"
+    generation_mode: str = "complete_project",
+    enable_langsmith: bool = False,
+    langsmith_project: str = "my-crew-project"
 ) -> Dict[str, str]:
     """
     Generate complete project structure as a dictionary of file paths to contents.
@@ -80,6 +82,8 @@ def generate_project_structure(
         env_vars: Environment variables to include
         python_version: Minimum Python version
         generation_mode: "core_files" or "complete_project" (default: "complete_project")
+        enable_langsmith: Whether to include LangSmith configuration
+        langsmith_project: LangSmith project name
 
     Returns:
         Dictionary mapping file paths to their contents
@@ -106,9 +110,9 @@ def generate_project_structure(
     if generation_mode == "complete_project":
         # Root level files
         files[".gitignore"] = generate_gitignore()
-        files["README.md"] = generate_readme(project_name, description)
-        files["pyproject.toml"] = generate_pyproject_toml(project_name, python_version)
-        files[".env"] = generate_env_file(env_vars)
+        files["README.md"] = generate_readme(project_name, description, enable_langsmith)
+        files["pyproject.toml"] = generate_pyproject_toml(project_name, python_version, enable_langsmith)
+        files[".env"] = generate_env_file(env_vars, enable_langsmith, langsmith_project)
 
         # Source directory __init__.py
         files[f"{src_dir}/__init__.py"] = generate_init_py(project_name)

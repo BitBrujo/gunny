@@ -147,9 +147,14 @@ def validate_tool_selection(selected_tools: List[str], all_tools: List[str]) -> 
     return len(errors) == 0, errors
 
 
-def check_required_env_vars(agents_config: List[Dict[str, Any]], tasks_tools: List[str]) -> List[str]:
+def check_required_env_vars(agents_config: List[Dict[str, Any]], tasks_tools: List[str], enable_langsmith: bool = False) -> List[str]:
     """
     Determine which environment variables are required based on configuration.
+
+    Args:
+        agents_config: List of agent configurations
+        tasks_tools: List of selected tools
+        enable_langsmith: Whether LangSmith tracing is enabled
 
     Returns:
         List of required environment variable names
@@ -174,6 +179,11 @@ def check_required_env_vars(agents_config: List[Dict[str, Any]], tasks_tools: Li
     for tool in tasks_tools:
         if tool in TOOL_ENV_REQUIREMENTS:
             required_vars.update(TOOL_ENV_REQUIREMENTS[tool])
+
+    # Check LangSmith requirements
+    if enable_langsmith:
+        required_vars.add("LANGCHAIN_API_KEY")
+        required_vars.add("LANGCHAIN_PROJECT")
 
     return sorted(list(required_vars))
 

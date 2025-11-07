@@ -450,9 +450,8 @@ with st.sidebar:
     st.markdown("---")
     st.markdown("### About Gunny")
     st.info(
-        "Gunny is a comprehensive tool for generating CrewAI projects. "
-        "Configure agents, tasks, and crews with all available options, "
-        "then download your complete project ready to run."
+        "Configure CrewAI agents, tasks, and crews. "
+        "Generate core files for existing projects or complete project structures."
     )
 
 # Main tabs
@@ -719,6 +718,36 @@ with tab4:
 
     st.markdown("---")
 
+    # LangSmith Observability
+    st.subheader("Observability & Tracing")
+
+    enable_langsmith = st.checkbox(
+        "Enable LangSmith Tracing",
+        value=st.session_state.get("enable_langsmith", False),
+        help="Enable LLM observability and debugging with LangSmith (free tier: 5k traces/month)"
+    )
+    st.session_state.enable_langsmith = enable_langsmith
+
+    if enable_langsmith:
+        langsmith_project = st.text_input(
+            "LangSmith Project Name",
+            value=st.session_state.get("langsmith_project", st.session_state.get("project_name", "my-crew-project")),
+            placeholder="my-crew-project",
+            help="Project name for organizing traces in LangSmith dashboard"
+        )
+        st.session_state.langsmith_project = langsmith_project
+
+        # Show mode-specific guidance
+        generation_mode = st.session_state.get("generation_mode", "core_files")
+        if generation_mode == "core_files":
+            st.warning("📋 **Core Files Mode**: Manual integration required. See instructions in the Preview & Generate tab.")
+        else:
+            st.success("✅ **Complete Project Mode**: LangSmith will be auto-configured in .env and pyproject.toml")
+
+        st.info("Get your free API key at: https://smith.langchain.com")
+
+    st.markdown("---")
+
     # Hierarchical Process Settings
     if process == "hierarchical":
         st.subheader("Hierarchical Process Settings")
@@ -828,7 +857,11 @@ with tab7:
 
     # Determine required env vars
     if st.session_state.agents:
-        required_vars = check_required_env_vars(st.session_state.agents, st.session_state.selected_tools)
+        required_vars = check_required_env_vars(
+            st.session_state.agents,
+            st.session_state.selected_tools,
+            st.session_state.get("enable_langsmith", False)
+        )
 
         if required_vars:
             st.info(f"Based on your configuration, you'll need: {', '.join(required_vars)}")
@@ -937,6 +970,40 @@ with tab8:
 
             st.markdown("---")
 
+            # LangSmith Integration Instructions (Core Files mode only)
+            if st.session_state.get("enable_langsmith", False) and st.session_state.generation_mode == "core_files":
+                st.markdown(f"<h3>{icon_inline('activity', 20)} LangSmith Integration</h3>", unsafe_allow_html=True)
+                st.info("**Core Files Mode**: LangSmith tracing requires manual setup in your existing project.")
+
+                langsmith_project = st.session_state.get("langsmith_project", "my-crew-project")
+
+                st.markdown(f"""
+**Follow these steps to enable LangSmith tracing:**
+
+1. **Install the LangSmith package:**
+   ```bash
+   pip install langsmith
+   ```
+
+2. **Add environment variables to your `.env` file:**
+   ```bash
+   LANGCHAIN_API_KEY=your_langsmith_api_key_here
+   LANGCHAIN_PROJECT={langsmith_project}
+   LANGCHAIN_ENDPOINT=https://api.smith.langchain.com
+   LANGCHAIN_TRACING_V2=true
+   ```
+
+3. **Get your free API key:**
+   - Visit [https://smith.langchain.com](https://smith.langchain.com)
+   - Sign up (5,000 traces/month free)
+   - Copy your API key and add it to `.env`
+
+4. **Run your crew** - tracing will work automatically!
+
+Traces will appear in your LangSmith dashboard for debugging and monitoring.
+                """)
+                st.markdown("---")
+
             # Generate and download
             st.markdown(f"<h3>{icon_inline('sparkles', 20)} Generate Project</h3>", unsafe_allow_html=True)
 
@@ -967,7 +1034,9 @@ with tab8:
                     st.session_state.tools_by_agent,
                     st.session_state.env_vars,
                     st.session_state.get("python_version", "3.10"),
-                    st.session_state.generation_mode
+                    st.session_state.generation_mode,
+                    st.session_state.get("enable_langsmith", False),
+                    st.session_state.get("langsmith_project", "my-crew-project")
                 )
 
                 # Create ZIP file

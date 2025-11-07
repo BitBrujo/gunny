@@ -109,12 +109,14 @@ def generate_tasks_yaml(tasks: List[Dict[str, Any]]) -> str:
     return yaml_content
 
 
-def generate_env_file(env_vars: Dict[str, str]) -> str:
+def generate_env_file(env_vars: Dict[str, str], enable_langsmith: bool = False, langsmith_project: str = "my-crew-project") -> str:
     """
     Generate .env file content.
 
     Args:
         env_vars: Dictionary of environment variable names and their placeholder values
+        enable_langsmith: Whether to include LangSmith configuration
+        langsmith_project: LangSmith project name
 
     Returns:
         String content for .env file
@@ -139,20 +141,42 @@ def generate_env_file(env_vars: Dict[str, str]) -> str:
             lines.append(f"{var}={value}")
         lines.append("")
 
+    # Add LangSmith configuration if enabled
+    if enable_langsmith:
+        lines.extend([
+            "# LangSmith Configuration (Observability)",
+            "# Get your free API key at: https://smith.langchain.com",
+            "LANGCHAIN_API_KEY=your_langsmith_api_key_here",
+            f"LANGCHAIN_PROJECT={langsmith_project}",
+            "LANGCHAIN_ENDPOINT=https://api.smith.langchain.com",
+            "LANGCHAIN_TRACING_V2=true",
+            ""
+        ])
+
     return "\n".join(lines)
 
 
-def generate_pyproject_toml(project_name: str, python_version: str = "3.10") -> str:
+def generate_pyproject_toml(project_name: str, python_version: str = "3.10", enable_langsmith: bool = False) -> str:
     """
     Generate pyproject.toml for the project.
 
     Args:
         project_name: Name of the project
         python_version: Minimum Python version
+        enable_langsmith: Whether to include LangSmith dependency
 
     Returns:
         String content for pyproject.toml
     """
+    # Base dependencies
+    dependencies = f'''python = "^{python_version}"
+crewai = {{version = "^1.3.0", extras = ["tools"]}}
+crewai-tools = "^1.3.0"'''
+
+    # Add langsmith if enabled
+    if enable_langsmith:
+        dependencies += '\nlangsmith = "^0.1.0"'
+
     toml_content = f'''[tool.poetry]
 name = "{project_name}"
 version = "0.1.0"
@@ -160,9 +184,7 @@ description = "A CrewAI project"
 authors = ["Your Name <you@example.com>"]
 
 [tool.poetry.dependencies]
-python = "^{python_version}"
-crewai = {{version = "^1.3.0", extras = ["tools"]}}
-crewai-tools = "^1.3.0"
+{dependencies}
 
 [build-system]
 requires = ["poetry-core"]
@@ -171,17 +193,40 @@ build-backend = "poetry.core.masonry.api"
     return toml_content
 
 
-def generate_readme(project_name: str, description: str) -> str:
+def generate_readme(project_name: str, description: str, enable_langsmith: bool = False) -> str:
     """
     Generate README.md for the project.
 
     Args:
         project_name: Name of the project
         description: Project description
+        enable_langsmith: Whether to include LangSmith setup instructions
 
     Returns:
         String content for README.md
     """
+    # LangSmith section (if enabled)
+    langsmith_section = ""
+    if enable_langsmith:
+        langsmith_section = '''
+## LangSmith Observability
+
+This project includes LangSmith tracing for debugging and monitoring your AI agents.
+
+### Setup
+
+1. Get a free API key at [https://smith.langchain.com](https://smith.langchain.com) (5,000 traces/month free)
+2. Edit `.env` and add your `LANGCHAIN_API_KEY`
+3. Run your crew - traces will appear in your LangSmith dashboard
+
+### View Traces
+
+- Visit [https://smith.langchain.com](https://smith.langchain.com) to view execution traces
+- Debug agent decisions, LLM calls, and token usage
+- Compare runs and track performance over time
+
+'''
+
     readme_content = f'''# {project_name}
 
 {description}
@@ -196,7 +241,7 @@ crewai install
 
 1. Copy `.env.example` to `.env`
 2. Add your API keys to the `.env` file
-
+{langsmith_section}
 ## Usage
 
 Run the crew:

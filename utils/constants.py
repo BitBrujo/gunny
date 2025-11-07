@@ -243,6 +243,7 @@ ENV_VARIABLES = {
     "Tavily": ["TAVILY_API_KEY"],
     "BraveSearch": ["BRAVE_API_KEY"],
     "SerpAPI": ["SERPAPI_API_KEY"],
+    "LangSmith": ["LANGCHAIN_API_KEY", "LANGCHAIN_PROJECT"],
 }
 
 # Required Environment Variables by Tool

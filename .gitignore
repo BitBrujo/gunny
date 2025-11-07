@@ -51,3 +51,4 @@ Thumbs.db
 
 # Documentation (not pushed to GitHub)
 *.md
+.claude

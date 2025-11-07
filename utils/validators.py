@@ -174,11 +174,12 @@ def check_required_env_vars(agents_config: List[Dict[str, Any]], tasks_tools: Li
             required_vars.add("AZURE_OPENAI_API_KEY")
             required_vars.add("AZURE_OPENAI_ENDPOINT")
 
-    # Check tool requirements
-    from utils.constants import TOOL_ENV_REQUIREMENTS
-    for tool in tasks_tools:
-        if tool in TOOL_ENV_REQUIREMENTS:
-            required_vars.update(TOOL_ENV_REQUIREMENTS[tool])
+    # Check tool requirements - primary source is TOOLS_CATALOG
+    from utils.constants import TOOLS_CATALOG
+    for category, tools in TOOLS_CATALOG.items():
+        for tool in tools:
+            if tool["name"] in tasks_tools and tool.get("env_vars"):
+                required_vars.update(tool["env_vars"])
 
     # Check LangSmith requirements
     if enable_langsmith:
@@ -186,6 +187,71 @@ def check_required_env_vars(agents_config: List[Dict[str, Any]], tasks_tools: Li
         required_vars.add("LANGCHAIN_PROJECT")
 
     return sorted(list(required_vars))
+
+
+def get_detailed_env_requirements(agents_config: List[Dict[str, Any]], tasks_tools: List[str], enable_langsmith: bool = False) -> Dict[str, Dict[str, Any]]:
+    """
+    Get detailed information about required environment variables.
+
+    Args:
+        agents_config: List of agent configurations
+        tasks_tools: List of selected tools
+        enable_langsmith: Whether LangSmith tracing is enabled
+
+    Returns:
+        Dict mapping env var names to details (required_by, description, category)
+    """
+    env_details = {}
+
+    # Check LLM requirements
+    for agent in agents_config:
+        llm = agent.get("llm", "")
+        agent_role = agent.get("role", "Unknown Agent")
+
+        if "gpt" in llm or "openai" in llm:
+            var = "OPENAI_API_KEY"
+            if var not in env_details:
+                env_details[var] = {"required_by": [], "category": "LLM"}
+            env_details[var]["required_by"].append(f"Agent: {agent_role}")
+
+        elif "claude" in llm or "anthropic" in llm:
+            var = "ANTHROPIC_API_KEY"
+            if var not in env_details:
+                env_details[var] = {"required_by": [], "category": "LLM"}
+            env_details[var]["required_by"].append(f"Agent: {agent_role}")
+
+        elif "gemini" in llm or "google" in llm:
+            var = "GOOGLE_API_KEY"
+            if var not in env_details:
+                env_details[var] = {"required_by": [], "category": "LLM"}
+            env_details[var]["required_by"].append(f"Agent: {agent_role}")
+
+        elif "azure" in llm:
+            for var in ["AZURE_OPENAI_API_KEY", "AZURE_OPENAI_ENDPOINT"]:
+                if var not in env_details:
+                    env_details[var] = {"required_by": [], "category": "LLM"}
+                env_details[var]["required_by"].append(f"Agent: {agent_role}")
+
+    # Check tool requirements
+    from utils.constants import TOOLS_CATALOG
+    for category, tools in TOOLS_CATALOG.items():
+        for tool in tools:
+            if tool["name"] in tasks_tools and tool.get("env_vars"):
+                for env_var in tool["env_vars"]:
+                    if env_var not in env_details:
+                        env_details[env_var] = {"required_by": [], "category": "Tool"}
+                    env_details[env_var]["required_by"].append(f"Tool: {tool['name']}")
+                    if tool.get("auth_note"):
+                        env_details[env_var]["auth_note"] = tool["auth_note"]
+
+    # Check LangSmith requirements
+    if enable_langsmith:
+        for var in ["LANGCHAIN_API_KEY", "LANGCHAIN_PROJECT"]:
+            if var not in env_details:
+                env_details[var] = {"required_by": [], "category": "Service"}
+            env_details[var]["required_by"].append("LangSmith Tracing")
+
+    return env_details
 
 
 def validate_complete_configuration(

@@ -940,23 +940,95 @@ with tab6:
 with tab7:
     st.header("Environment Variables")
 
-    # Section 1: Auto-Detected Environment Variables
-    st.markdown('<div class="section-container">', unsafe_allow_html=True)
+    # Helper: Extract env vars from selected tools
+    def get_tool_env_vars(selected_tools: List[str]) -> Dict[str, List[str]]:
+        """Get environment variables required by selected tools with tool names."""
+        tool_env_map = {}
+        for category, tools in TOOLS_CATALOG.items():
+            for tool in tools:
+                if tool["name"] in selected_tools and tool.get("env_vars"):
+                    for env_var in tool["env_vars"]:
+                        if env_var not in tool_env_map:
+                            tool_env_map[env_var] = []
+                        tool_env_map[env_var].append(tool["name"])
+        return tool_env_map
 
-    # Determine required env vars
+    # Section 1: Auto-Detected from Tools
+    st.markdown('<div class="section-container">', unsafe_allow_html=True)
+    st.subheader("🔐 Auto-Detected from Tools")
+
+    tool_env_vars = get_tool_env_vars(st.session_state.selected_tools)
+
+    if tool_env_vars:
+        st.info(f"Detected {len(tool_env_vars)} environment variable(s) required by selected tools")
+
+        # Initialize disabled_env_vars set if not exists
+        if 'disabled_env_vars' not in st.session_state:
+            st.session_state.disabled_env_vars = set()
+
+        for env_var, tool_names in sorted(tool_env_vars.items()):
+            col1, col2 = st.columns([1, 5])
+
+            with col1:
+                is_enabled = st.checkbox(
+                    "Enable",
+                    value=env_var not in st.session_state.disabled_env_vars,
+                    key=f"enable_{env_var}",
+                    help="Toggle to enable/disable this auto-detected variable"
+                )
+
+                if not is_enabled:
+                    st.session_state.disabled_env_vars.add(env_var)
+                else:
+                    st.session_state.disabled_env_vars.discard(env_var)
+
+            with col2:
+                if is_enabled:
+                    placeholder = "your_api_key_here"
+                    current_value = st.session_state.env_vars.get(env_var, placeholder)
+
+                    env_value = st.text_input(
+                        env_var,
+                        value=current_value,
+                        type="password",
+                        help=f"Required by: {', '.join(tool_names)}",
+                        key=f"tool_env_{env_var}",
+                    )
+                    st.session_state.env_vars[env_var] = env_value
+                else:
+                    st.text_input(
+                        env_var,
+                        value="(disabled)",
+                        disabled=True,
+                        help=f"Would be required by: {', '.join(tool_names)}",
+                        key=f"tool_env_disabled_{env_var}",
+                    )
+                    # Remove from env_vars if disabled
+                    st.session_state.env_vars.pop(env_var, None)
+    else:
+        st.info("No tools requiring authentication selected. Select tools in the Tools tab to see auto-detected variables.")
+
+    st.markdown("</div>", unsafe_allow_html=True)
+
+    # Section 2: Auto-Detected from LLMs
+    st.markdown('<div class="section-container">', unsafe_allow_html=True)
+    st.subheader("🤖 Auto-Detected from LLMs")
+
+    # Determine required env vars from agents
     if st.session_state.agents:
-        required_vars = check_required_env_vars(
+        llm_required_vars = check_required_env_vars(
             st.session_state.agents,
-            st.session_state.selected_tools,
+            [],  # Don't include tools here, handled in Section 1
             st.session_state.get("enable_langsmith", False),
         )
 
-        if required_vars:
-            st.info(
-                f"Based on your configuration, you'll need: {', '.join(required_vars)}"
-            )
+        # Remove tool-related vars since they're in Section 1
+        llm_only_vars = [v for v in llm_required_vars if v not in tool_env_vars]
 
-            for var in required_vars:
+        if llm_only_vars:
+            st.info(f"Detected {len(llm_only_vars)} environment variable(s) for LLMs and services")
+
+            for var in llm_only_vars:
                 placeholder = "your_api_key_here"
                 current_value = st.session_state.env_vars.get(var, placeholder)
 
@@ -965,18 +1037,19 @@ with tab7:
                     value=current_value,
                     type="password",
                     help=f"API key for {var}",
-                    key=f"env_{var}",
+                    key=f"llm_env_{var}",
                 )
                 st.session_state.env_vars[var] = env_value
         else:
-            st.info(
-                "No specific API keys detected. You can add custom environment variables below."
-            )
+            st.info("No LLM-specific API keys detected. Configure agents with LLMs to see required variables.")
+    else:
+        st.info("Add agents in the Agents tab to detect required LLM API keys")
+
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # Section 2: Custom Environment Variables
+    # Section 3: Custom Environment Variables
     st.markdown('<div class="section-container">', unsafe_allow_html=True)
-    st.subheader("Custom Environment Variables")
+    st.subheader("➕ Custom Environment Variables")
 
     custom_var_name = st.text_input("Variable Name", key="custom_env_name")
     custom_var_value = st.text_input(
@@ -991,9 +1064,9 @@ with tab7:
             st.error("Please provide both name and value")
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # Section 3: Enterprise Features
+    # Section 4: Enterprise Features
     st.markdown('<div class="section-container">', unsafe_allow_html=True)
-    st.subheader("Enterprise Features")
+    st.subheader("🏢 Enterprise Features")
 
     enterprise_apps = st.multiselect(
         "Enterprise App Integrations",

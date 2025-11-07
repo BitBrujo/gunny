@@ -464,8 +464,10 @@ st.markdown(
     width: 100%;
     box-sizing: border-box;
 '>
-    <h1 style='margin: 0; font-size: 5rem; color: white;'>Gunny</h1>
-    <p style='margin: 0.25rem 0 0 0; font-size: 0.9rem; color: rgba(255, 255, 255, 0.85);'>CrewAI Companion</p>
+    <div style='display: inline-block; background: #ec4899; padding: 0.75rem 2rem; border-radius: 50px; margin-bottom: 0.75rem; box-shadow: none; border: none;'>
+        <h1 style='margin: 0; font-size: 5rem; color: white;'>Gunny</h1>
+    </div>
+    <p style='margin: 0.5rem 0 0 0; font-size: 1.5rem; color: rgba(255, 255, 255, 0.95); font-weight: 500;'>CrewAI Companion</p>
 </div>
 """,
     unsafe_allow_html=True,
@@ -905,7 +907,6 @@ with tab6:
 # Tab 7: ENV Configuration
 with tab7:
     st.header("Environment Variables")
-    st.markdown("Configure API keys and environment variables")
 
     # Section 1: Auto-Detected Environment Variables
     st.markdown('<div class="section-container">', unsafe_allow_html=True)

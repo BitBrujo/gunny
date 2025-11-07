@@ -1,4 +1,4 @@
-# 🎯 Gunny - CrewAI Companion
+# Gunny - CrewAI Companion
 
 A comprehensive Streamlit application for creating complete CrewAI projects with all available configuration options.
 

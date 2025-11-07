@@ -391,6 +391,8 @@ if "knowledge_sources" not in st.session_state:
     st.session_state.knowledge_sources = []
 if "env_vars" not in st.session_state:
     st.session_state.env_vars = {}
+if "generation_mode" not in st.session_state:
+    st.session_state.generation_mode = "core_files"
 
 # Header
 st.markdown(f"<h1>{get_icon('target', 28)} Gunny - CrewAI Project Generator</h1>", unsafe_allow_html=True)
@@ -456,8 +458,39 @@ with tab1:
         st.session_state.project_description = project_description
 
     st.markdown("---")
+
+    # Generation mode selector
+    st.subheader("Generation Mode")
+    generation_mode = st.radio(
+        "What would you like to generate?",
+        options=["core_files", "complete_project"],
+        format_func=lambda x: "Core Files Only" if x == "core_files" else "Complete Project",
+        index=0 if st.session_state.generation_mode == "core_files" else 1,
+        help="Core Files: generates only agents.yaml, tasks.yaml, crew.py, main.py for existing projects. Complete Project: generates full project structure with all boilerplate.",
+        horizontal=True
+    )
+    st.session_state.generation_mode = generation_mode
+
+    if generation_mode == "core_files":
+        st.info(f"{icon_inline('info')} Core Files mode generates only the essential CrewAI files for adding to existing projects", unsafe_allow_html=True)
+    else:
+        st.info(f"{icon_inline('info')} Complete Project mode generates a full project structure ready to run", unsafe_allow_html=True)
+
+    st.markdown("---")
     st.markdown("### Project Structure Preview")
-    st.code(f"""
+
+    if st.session_state.generation_mode == "core_files":
+        st.code(f"""
+{project_name}/
+└── src/{project_name}/
+    ├── main.py
+    ├── crew.py
+    └── config/
+        ├── agents.yaml
+        └── tasks.yaml
+""", language="text")
+    else:
+        st.code(f"""
 {project_name}/
 ├── .gitignore
 ├── .env
@@ -891,25 +924,51 @@ with tab8:
                     st.session_state.crew_config,
                     st.session_state.tools_by_agent,
                     st.session_state.env_vars,
-                    st.session_state.get("python_version", "3.10")
+                    st.session_state.get("python_version", "3.10"),
+                    st.session_state.generation_mode
                 )
 
                 # Create ZIP file
                 zip_data = create_zip_file(project_files, project_name)
 
+                # Customize filename based on mode
+                if st.session_state.generation_mode == "core_files":
+                    zip_filename = f"{project_name}_core.zip"
+                else:
+                    zip_filename = f"{project_name}.zip"
+
                 st.download_button(
                     label=f"{icon_inline('download', 16)} Download ZIP",
                     data=zip_data,
-                    file_name=f"{project_name}.zip",
+                    file_name=zip_filename,
                     mime="application/zip",
                     use_container_width=True
                 )
 
-            st.success(f"{icon_inline('check-circle')} Project generated successfully! Download the ZIP file and extract it to get started.", unsafe_allow_html=True)
+            # Customize success message based on mode
+            if st.session_state.generation_mode == "core_files":
+                st.success(f"{icon_inline('check-circle')} Core files generated successfully! Download includes: agents.yaml, tasks.yaml, crew.py, main.py", unsafe_allow_html=True)
+            else:
+                st.success(f"{icon_inline('check-circle')} Project generated successfully! Download the ZIP file and extract it to get started.", unsafe_allow_html=True)
 
             st.markdown("---")
             st.markdown(f"<h3>{icon_inline('rocket', 20)} Next Steps</h3>", unsafe_allow_html=True)
-            st.markdown(f"""
+
+            if st.session_state.generation_mode == "core_files":
+                st.markdown(f"""
+1. **Extract the ZIP file** to your existing CrewAI project
+2. **Copy the files** to your project structure:
+   - Place `agents.yaml` and `tasks.yaml` in your `config/` directory
+   - Place `crew.py` and `main.py` in your source directory
+3. **Update imports** in your code if needed
+4. **Configure your `.env`** file with required API keys
+5. **Run your crew:**
+   ```bash
+   crewai run
+   ```
+                """)
+            else:
+                st.markdown(f"""
 1. **Extract the ZIP file**
 2. **Navigate to the project directory:**
    ```bash
@@ -925,7 +984,7 @@ with tab8:
    ```bash
    crewai run
    ```
-            """)
+                """)
 
 # Footer
 st.markdown("---")

@@ -64,7 +64,8 @@ def generate_project_structure(
     crew_config: Dict[str, Any],
     tools_by_agent: Dict[str, List[str]],
     env_vars: Dict[str, str],
-    python_version: str = "3.10"
+    python_version: str = "3.10",
+    generation_mode: str = "complete_project"
 ) -> Dict[str, str]:
     """
     Generate complete project structure as a dictionary of file paths to contents.
@@ -78,6 +79,7 @@ def generate_project_structure(
         tools_by_agent: Dictionary mapping agent roles to their tools
         env_vars: Environment variables to include
         python_version: Minimum Python version
+        generation_mode: "core_files" or "complete_project" (default: "complete_project")
 
     Returns:
         Dictionary mapping file paths to their contents
@@ -87,27 +89,33 @@ def generate_project_structure(
     # Extract input variables
     input_vars = extract_input_variables(agents, tasks)
 
-    # Root level files
-    files[".gitignore"] = generate_gitignore()
-    files["README.md"] = generate_readme(project_name, description)
-    files["pyproject.toml"] = generate_pyproject_toml(project_name, python_version)
-    files[".env"] = generate_env_file(env_vars)
-
     # Source directory files
     src_dir = f"src/{project_name}"
-    files[f"{src_dir}/__init__.py"] = generate_init_py(project_name)
+
+    # Core files (always included)
     files[f"{src_dir}/crew.py"] = generate_crew_py(
         project_name, agents, tasks, crew_config, tools_by_agent
     )
     files[f"{src_dir}/main.py"] = generate_main_py(project_name, input_vars)
 
-    # Config files
+    # Config files (always included)
     files[f"{src_dir}/config/agents.yaml"] = generate_agents_yaml(agents)
     files[f"{src_dir}/config/tasks.yaml"] = generate_tasks_yaml(tasks)
 
-    # Tools directory
-    files[f"{src_dir}/tools/__init__.py"] = '"""\nCustom tools for the crew.\n"""\n'
-    files[f"{src_dir}/tools/custom_tool.py"] = '''"""
+    # Additional files only for complete project mode
+    if generation_mode == "complete_project":
+        # Root level files
+        files[".gitignore"] = generate_gitignore()
+        files["README.md"] = generate_readme(project_name, description)
+        files["pyproject.toml"] = generate_pyproject_toml(project_name, python_version)
+        files[".env"] = generate_env_file(env_vars)
+
+        # Source directory __init__.py
+        files[f"{src_dir}/__init__.py"] = generate_init_py(project_name)
+
+        # Tools directory
+        files[f"{src_dir}/tools/__init__.py"] = '"""\nCustom tools for the crew.\n"""\n'
+        files[f"{src_dir}/tools/custom_tool.py"] = '''"""
 Example custom tool.
 
 You can create your own custom tools here.
@@ -134,9 +142,9 @@ class MyCustomTool(BaseTool):
         return f"Processed: {argument}"
 '''
 
-    # Knowledge directory
-    files[f"{src_dir}/knowledge/.gitkeep"] = ""
-    files[f"{src_dir}/knowledge/README.md"] = """# Knowledge Base
+        # Knowledge directory
+        files[f"{src_dir}/knowledge/.gitkeep"] = ""
+        files[f"{src_dir}/knowledge/README.md"] = """# Knowledge Base
 
 Place your knowledge base files here:
 - PDF documents

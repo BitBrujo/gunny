@@ -322,12 +322,21 @@ def tools_selector(selected_tools: List[str] = None) -> List[str]:
 
                 # Create unique key by including category to avoid duplicates
                 category_key = category.replace("/", "_").replace(" ", "_").lower()
-                is_selected = st.checkbox(
-                    f"**{tool['name']}**",
-                    value=tool["name"] in selected_tools,
-                    key=f"tool_{category_key}_{tool['name']}",
-                    help=tool["description"]
-                )
+
+                # Create a card-style container for each tool
+                with st.container():
+                    # Checkbox with tool name
+                    is_selected = st.checkbox(
+                        f"**{tool['name']}**",
+                        value=tool["name"] in selected_tools,
+                        key=f"tool_{category_key}_{tool['name']}"
+                    )
+
+                    # Display description below checkbox
+                    st.markdown(f"<p style='margin-top: -10px; margin-left: 24px; font-size: 0.9em; color: #666;'>{tool['description']}</p>", unsafe_allow_html=True)
+
+                    # Add spacing between tools
+                    st.write("")
 
                 if is_selected:
                     selected.append(tool["name"])

@@ -416,6 +416,15 @@ st.markdown("""
     .stSpinner > div {
         border-top-color: var(--primary) !important;
     }
+
+    /* Section Container - Card-like styling for section groups */
+    .section-container {
+        background: oklch(0.28 0.065 281);
+        border-radius: var(--radius);
+        padding: var(--space-md);
+        margin-bottom: var(--space-lg);
+        border: 1px solid var(--border);
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -463,7 +472,7 @@ tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8 = st.tabs([
     "Crew Config",
     f"Tools ({tool_count})",
     "Knowledge",
-    "Advanced",
+    "ENV",
     "Preview & Generate"
 ])
 
@@ -836,10 +845,12 @@ with tab6:
         )
         st.session_state.embedder_provider = embedder_provider
 
-# Tab 7: Advanced Configuration
+# Tab 7: ENV Configuration
 with tab7:
-    st.header("Advanced Configuration")
+    st.header("ENV Configuration")
 
+    # Section 1: Auto-Detected Environment Variables
+    st.markdown('<div class="section-container">', unsafe_allow_html=True)
     st.subheader("Environment Variables")
     st.markdown("Configure API keys and environment variables")
 
@@ -868,8 +879,10 @@ with tab7:
                 st.session_state.env_vars[var] = env_value
         else:
             st.info("No specific API keys detected. You can add custom environment variables below.")
+    st.markdown('</div>', unsafe_allow_html=True)
 
-    st.markdown("---")
+    # Section 2: Custom Environment Variables
+    st.markdown('<div class="section-container">', unsafe_allow_html=True)
     st.subheader("Custom Environment Variables")
 
     custom_var_name = st.text_input("Variable Name", key="custom_env_name")
@@ -881,8 +894,10 @@ with tab7:
             st.success(f"Added {custom_var_name}")
         else:
             st.error("Please provide both name and value")
+    st.markdown('</div>', unsafe_allow_html=True)
 
-    st.markdown("---")
+    # Section 3: Enterprise Features
+    st.markdown('<div class="section-container">', unsafe_allow_html=True)
     st.subheader("Enterprise Features")
 
     enterprise_apps = st.multiselect(
@@ -894,6 +909,7 @@ with tab7:
 
     if enterprise_apps:
         st.info(f"Selected: {', '.join(enterprise_apps)}")
+    st.markdown('</div>', unsafe_allow_html=True)
 
 # Tab 8: Preview & Generate
 with tab8:

@@ -34,7 +34,7 @@ from ui.icons import get_icon, icon_inline, icon_tab, icon_button, get_favicon_s
 
 # Page configuration
 st.set_page_config(
-    page_title="Gunny - CrewAI Project Generator",
+    page_title="Gunny - CrewAI Companion",
     page_icon=get_favicon_svg(),
     layout="wide",
     initial_sidebar_state="expanded"
@@ -165,6 +165,7 @@ st.markdown("""
     .stTabs [data-baseweb="tab-list"] {
         gap: 0.5rem;
         background-color: transparent !important;
+        border-bottom: none !important;
     }
 
     .stTabs [data-baseweb="tab"] {
@@ -180,6 +181,22 @@ st.markdown("""
         background-color: var(--primary) !important;
         color: var(--primary-foreground) !important;
         border-color: var(--primary) !important;
+    }
+
+    /* Hide tab borders and underlines */
+    .stTabs [data-baseweb="tab-border"] {
+        display: none !important;
+    }
+
+    .stTabs [data-baseweb="tab-highlight"] {
+        display: none !important;
+    }
+
+    .stTabs::after,
+    .stTabs::before,
+    .stTabs [data-baseweb="tab-list"]::after,
+    .stTabs [data-baseweb="tab-list"]::before {
+        display: none !important;
     }
 
     /* Input fields */
@@ -268,6 +285,13 @@ st.markdown("""
         border-left: 4px solid var(--primary) !important;
     }
 
+    /* Sidebar info text styling - smaller and lighter */
+    [data-testid="stSidebar"] .stAlert p {
+        font-size: 0.85rem !important;
+        font-weight: 400 !important;
+        line-height: 1.5 !important;
+    }
+
     /* Code blocks */
     code {
         font-family: var(--font-mono) !important;
@@ -297,6 +321,25 @@ st.markdown("""
     .stRadio label {
         color: var(--foreground) !important;
         font-family: var(--font-sans) !important;
+    }
+
+    /* Radio button custom styling - brand pink */
+    .stRadio [role="radio"][aria-checked="true"]::before {
+        background-color: var(--primary) !important;
+    }
+
+    .stRadio [role="radio"]::before {
+        border-color: var(--primary) !important;
+    }
+
+    /* Remove white center dot from selected radio buttons */
+    .stRadio [role="radio"][aria-checked="true"]::after {
+        display: none !important;
+    }
+
+    /* Ensure transparent background for all radio inner elements */
+    .stRadio [role="radio"]::after {
+        background-color: transparent !important;
     }
 
     /* Dataframe */
@@ -395,8 +438,7 @@ if "generation_mode" not in st.session_state:
     st.session_state.generation_mode = "core_files"
 
 # Header
-st.markdown(f"<h1>{get_icon('target', 28)} Gunny - CrewAI Project Generator</h1>", unsafe_allow_html=True)
-st.markdown("### Build complete CrewAI projects with all configuration options")
+st.markdown(f"<h1>{get_icon('target', 28)} Gunny - CrewAI Companion</h1>", unsafe_allow_html=True)
 
 # Sidebar
 with st.sidebar:
@@ -472,9 +514,9 @@ with tab1:
     st.session_state.generation_mode = generation_mode
 
     if generation_mode == "core_files":
-        st.info("💡 Core Files mode generates only the essential CrewAI files for adding to existing projects")
+        st.info("Core Files mode generates only the essential CrewAI files for adding to existing projects")
     else:
-        st.info("💡 Complete Project mode generates a full project structure ready to run")
+        st.info("Complete Project mode generates a full project structure ready to run")
 
     st.markdown("---")
     st.markdown("### Project Structure Preview")
@@ -533,14 +575,14 @@ with tab2:
 
     # Display agent forms
     if len(st.session_state.agents) == 0:
-        st.info("⬆️ Click 'Add Agent' to create your first agent")
+        st.info("Click 'Add Agent' to create your first agent")
     else:
         for i in range(len(st.session_state.agents)):
             agent_config = agent_configuration_form(i, st.session_state.agents[i])
             st.session_state.agents[i] = agent_config
 
             # Tools for this agent
-            with st.expander(f"{icon_inline('wrench')} Tools for Agent {i + 1}", expanded=False):
+            with st.expander(f"Tools for Agent {i + 1}", expanded=False):
                 agent_role = agent_config.get("role", f"Agent {i+1}")
                 current_tools = st.session_state.tools_by_agent.get(agent_role, [])
 
@@ -591,9 +633,9 @@ with tab3:
 
     # Check if agents exist
     if len(available_agents) == 0:
-        st.warning("⚠️ Please create at least one agent first in the Agents tab")
+        st.warning("Please create at least one agent first in the Agents tab")
     elif len(st.session_state.tasks) == 0:
-        st.info("⬆️ Click 'Add Task' to create your first task")
+        st.info("Click 'Add Task' to create your first task")
     else:
         for i in range(len(st.session_state.tasks)):
             # Get available tasks for context (excluding current task)
@@ -695,13 +737,13 @@ with tab5:
     st.header("Tools Configuration")
     st.markdown("Select tools available to your agents.")
 
-    st.info(f"💡 Total tools available: {sum(len(tools) for tools in TOOLS_CATALOG.values())}")
+    st.info(f"Total tools available: {sum(len(tools) for tools in TOOLS_CATALOG.values())}")
 
     selected_tools = tools_selector(st.session_state.selected_tools)
     st.session_state.selected_tools = selected_tools
 
     if selected_tools:
-        st.success(f"✅ {len(selected_tools)} tools selected")
+        st.success(f"{len(selected_tools)} tools selected")
 
         with st.expander("View Selected Tools"):
             for tool in selected_tools:
@@ -725,7 +767,7 @@ with tab6:
     st.markdown("---")
 
     if len(st.session_state.knowledge_sources) == 0:
-        st.info("⬆️ Click 'Add Knowledge Source' to add knowledge to your crew")
+        st.info("Click 'Add Knowledge Source' to add knowledge to your crew")
     else:
         for i, source in enumerate(st.session_state.knowledge_sources):
             with st.expander(f"Knowledge Source {i + 1}", expanded=True):
@@ -840,11 +882,11 @@ with tab8:
     project_name = st.session_state.get("project_name", "")
 
     if not project_name:
-        st.error("⚠️ Please provide a project name in the Project Info tab")
+        st.error("Please provide a project name in the Project Info tab")
     elif len(st.session_state.agents) == 0:
-        st.error("⚠️ Please create at least one agent")
+        st.error("Please create at least one agent")
     elif len(st.session_state.tasks) == 0:
-        st.error("⚠️ Please create at least one task")
+        st.error("Please create at least one task")
     else:
         # Validate configuration
         is_valid, errors = validate_complete_configuration(
@@ -947,9 +989,9 @@ with tab8:
 
             # Customize success message based on mode
             if st.session_state.generation_mode == "core_files":
-                st.success("✅ Core files generated successfully! Download includes: agents.yaml, tasks.yaml, crew.py, main.py")
+                st.success("Core files generated successfully! Download includes: agents.yaml, tasks.yaml, crew.py, main.py")
             else:
-                st.success("✅ Project generated successfully! Download the ZIP file and extract it to get started.")
+                st.success("Project generated successfully! Download the ZIP file and extract it to get started.")
 
             st.markdown("---")
             st.markdown(f"<h3>{icon_inline('rocket', 20)} Next Steps</h3>", unsafe_allow_html=True)
@@ -985,11 +1027,3 @@ with tab8:
    crewai run
    ```
                 """)
-
-# Footer
-st.markdown("---")
-st.markdown(
-    f"<div style='text-align: center'>Made with {get_icon('heart', 16, 'var(--destructive)')} using Streamlit | "
-    "Powered by CrewAI | <a href='https://github.com/yourusername/gunny'>GitHub</a></div>",
-    unsafe_allow_html=True
-)

@@ -8,7 +8,9 @@ A comprehensive Streamlit application for creating complete CrewAI projects with
 
 - **Complete Configuration Coverage**: Access to ALL 50+ agent parameters, 30+ task parameters, and 40+ crew parameters
 - **94 Built-in Tools**: Select from the complete CrewAI tools catalog with visible descriptions
+- **Version Detection**: Automatic CrewAI version detection with compatibility warnings
 - **Custom Model Support**: Enter custom model names for any LLM provider
+- **Two Generation Modes**: Core Files Only (for existing projects) or Complete Project (full boilerplate)
 - **Real-time Preview**: See generated YAML and Python code as you configure
 - **Validation**: Built-in validation to ensure your configuration is correct
 - **One-Click Download**: Generate and download complete project as ZIP file
@@ -114,6 +116,23 @@ streamlit run app.py
 ## License
 
 MIT License - See LICENSE file for details
+
+## CrewAI Version Compatibility
+
+Gunny has been tested with CrewAI versions 0.1.0 through 1.4.1. The sidebar displays compatibility status:
+
+- ✅ **Green**: Tested and compatible version
+- ⚠️ **Yellow**: Untested version (may have new features or breaking changes)
+
+Currently tested versions: 0.1.0, 0.2.0, 0.3.0, 0.4.0, 0.10.0, 0.20.0, 0.30.0, 0.40.0, 0.50.0, 0.60.0, 0.70.0, 0.80.0, 0.86.0, 1.4.1
+
+For maintenance and sync procedures, see [MAINTAINABILITY.md](MAINTAINABILITY.md).
+
+## Documentation
+
+- **[MAINTAINABILITY.md](MAINTAINABILITY.md)**: How to keep Gunny in sync with CrewAI updates
+- **[CLAUDE.md](CLAUDE.md)**: AI assistant guidance for working with the codebase
+- **[TEST_REPORT_1.4.1.md](TEST_REPORT_1.4.1.md)**: Detailed testing results for CrewAI 1.4.1
 
 ## Support
 

@@ -683,9 +683,9 @@ TESTED_CREWAI_VERSIONS = [
     "0.1.0", "0.2.0", "0.3.0", "0.4.0",
     "0.10.0", "0.20.0", "0.30.0", "0.40.0",
     "0.50.0", "0.60.0", "0.70.0", "0.80.0",
-    "0.86.0"
+    "0.86.0", "1.4.1"
 ]
-LATEST_TESTED_VERSION = "0.86.0"
+LATEST_TESTED_VERSION = "1.4.1"
 
 # Process Types
 PROCESS_TYPES = {

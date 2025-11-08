@@ -56,7 +56,7 @@ st.markdown(
         --card-foreground: oklch(0.9513 0.0074 260.7315);
         --popover: oklch(0.2542 0.0611 281.1423);
         --popover-foreground: oklch(0.9513 0.0074 260.7315);
-        --primary: oklch(0.6726 0.2904 341.4084);
+        --primary: #ec4899;
         --primary-foreground: oklch(1.0000 0 0);
         --secondary: oklch(0.2542 0.0611 281.1423);
         --secondary-foreground: oklch(0.9513 0.0074 260.7315);
@@ -68,10 +68,10 @@ st.markdown(
         --destructive-foreground: oklch(1.0000 0 0);
         --border: oklch(0.3279 0.0832 280.7890);
         --input: oklch(0.3279 0.0832 280.7890);
-        --ring: oklch(0.6726 0.2904 341.4084);
+        --ring: #ec4899;
         --sidebar: oklch(0.1649 0.0352 281.8285);
         --sidebar-foreground: oklch(0.9513 0.0074 260.7315);
-        --sidebar-primary: oklch(0.6726 0.2904 341.4084);
+        --sidebar-primary: #ec4899;
         --sidebar-accent: oklch(0.8903 0.1739 171.2690);
         --sidebar-border: oklch(0.3279 0.0832 280.7890);
         --font-sans: 'Outfit', sans-serif;

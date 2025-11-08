@@ -500,16 +500,20 @@ with st.sidebar:
     st.markdown("---")
 
     # CrewAI Version Check
-    version, is_compatible, message = get_version_info(
-        TESTED_CREWAI_VERSIONS,
-        LATEST_TESTED_VERSION
-    )
+    try:
+        version, is_compatible, message = get_version_info(
+            TESTED_CREWAI_VERSIONS,
+            LATEST_TESTED_VERSION
+        )
 
-    if message:
-        if is_compatible:
-            st.success(message)
-        else:
-            st.warning(message)
+        if message:
+            if is_compatible:
+                st.success(message)
+            else:
+                st.warning(message)
+
+    except Exception as e:
+        st.error(f"Version check error: {e}")
 
     st.markdown("---")
     st.markdown("### About Gunny")

@@ -121,94 +121,6 @@ docker build -t gunny .
 docker run -p 8501:8501 gunny
 ```
 
-### Docker Image Details
-
-- **Base Image:** Python 3.12-slim
-- **Platforms:** linux/amd64, linux/arm64
-- **Size:** ~200MB
-- **User:** Non-root user for security
-- **Health Check:** Automatic health monitoring
-- **Documentation:** Includes README.md and MAINTAINABILITY.md
-
-### Custom Port
-
-To use a different port (e.g., 8080):
-
-```bash
-docker run -p 8080:8501 bitbrujo/gunny:latest
-```
-
-Then access at `http://localhost:8080`
-
-## Usage
-
-### 1. Project Information
-- Set your project name and description
-- Choose Python version
-- **Select generation mode**: Core Files Only (default) or Complete Project
-- Preview the project structure
-
-### 2. Configure Agents
-- Add multiple agents with unique roles
-- Configure 50+ parameters per agent:
-  - Basic: role, goal, backstory
-  - Execution: verbose, cache, max iterations
-  - AI Features: reasoning, multimodal, code execution
-  - LLM: Select from OpenAI, Anthropic, Google, Ollama, etc., or enter custom model names
-  - Tools: Assign tools to each agent
-
-### 3. Define Tasks
-- Create tasks and assign them to agents
-- Configure 30+ parameters per task:
-  - Basic: description, expected output
-  - Dependencies: context from other tasks
-  - Execution: async, human input
-  - Output: file paths, markdown formatting
-
-### 4. Crew Configuration
-- Choose process type (Sequential or Hierarchical)
-- Enable memory and planning
-- Configure manager LLM for hierarchical crews
-- Set rate limits and caching
-
-### 5. Select Tools
-- Browse 94 available tools by category with visible descriptions:
-  - File/Document Tools
-  - Search & Scraping Tools
-  - Web Browser/Automation Tools
-  - Database & Vector Search Tools
-  - Integration Tools
-  - AI & ML Tools
-  - Other Tools
-- Tool descriptions are displayed directly (no hover required)
-- Search by tool name or description
-- Organized in expandable category cards
-
-#### Tool Stub Generation
-When you select tools, Gunny automatically generates:
-- Individual stub files for each selected tool with usage examples
-- Authentication requirements and environment variable setup
-- Integration instructions for your agents
-- Generic custom tool template for building your own tools
-
-All stubs are included in both Core Files and Complete Project modes in the `tools/` directory.
-
-### 6. Knowledge Base
-- Add knowledge sources (PDF, Text, CSV, JSON, Excel)
-- Configure embedder providers (17 options)
-- Set up custom knowledge configuration
-
-### 7. Advanced Settings
-- Configure environment variables and API keys
-- Enable enterprise app integrations
-- Add custom configurations
-
-### 8. Preview & Generate
-- Review generated code (agents.yaml, tasks.yaml, crew.py, main.py)
-- Preview dynamic tool stubs for selected tools
-- Validate configuration
-- Download complete project as ZIP with tools/ and knowledge/ directories
-
 ## License
 
 MIT License - See LICENSE file for details
@@ -223,24 +135,6 @@ Gunny has been tested with CrewAI versions 0.1.0 through 1.4.1. The sidebar disp
 Currently tested versions: 0.1.0, 0.2.0, 0.3.0, 0.4.0, 0.10.0, 0.20.0, 0.30.0, 0.40.0, 0.50.0, 0.60.0, 0.70.0, 0.80.0, 0.86.0, 1.4.1
 
 For maintenance and sync procedures, see [MAINTAINABILITY.md](MAINTAINABILITY.md).
-
-## Documentation
-
-- **[MAINTAINABILITY.md](MAINTAINABILITY.md)**: How to keep Gunny in sync with CrewAI updates
-- **[TEST_REPORT_1.4.1.md](TEST_REPORT_1.4.1.md)**: Detailed testing results for CrewAI 1.4.1
-- **[CHANGELOG.md](CHANGELOG.md)**: Version history and release notes
-
-## Releases
-
-### Latest Release: v1.0.0
-
-This is the first stable release of Gunny! See the [v1.0.0 Release Notes](https://github.com/bitbrujo/gunny/releases/tag/v1.0.0) for complete details.
-
-**Docker Images:**
-- Docker Hub: `docker pull bitbrujo/gunny:1.0.0`
-- GitHub Container Registry: `docker pull ghcr.io/bitbrujo/gunny:1.0.0`
-
-View all releases on the [GitHub Releases page](https://github.com/bitbrujo/gunny/releases).
 
 ## Support
 

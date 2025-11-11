@@ -8,9 +8,10 @@ A comprehensive Streamlit application for creating complete CrewAI projects with
 
 - **Complete Configuration Coverage**: Access to ALL 50+ agent parameters, 30+ task parameters, and 40+ crew parameters
 - **94 Built-in Tools**: Select from the complete CrewAI tools catalog with visible descriptions
+- **Dynamic Tool Stub Generation**: Auto-generates configuration files for selected tools with usage examples, authentication requirements, and integration instructions
 - **Version Detection**: Automatic CrewAI version detection with compatibility warnings
 - **Custom Model Support**: Enter custom model names for any LLM provider
-- **Two Generation Modes**: Core Files Only (for existing projects) or Complete Project (full boilerplate)
+- **Two Generation Modes**: Core Files Only or Complete Project - both now include dynamic tool stubs and knowledge/ directory
 - **Real-time Preview**: See generated YAML and Python code as you configure
 - **Validation**: Built-in validation to ensure your configuration is correct
 - **One-Click Download**: Generate and download complete project as ZIP file
@@ -98,6 +99,15 @@ streamlit run app.py
 - Search by tool name or description
 - Organized in expandable category cards
 
+#### Tool Stub Generation
+When you select tools, Gunny automatically generates:
+- Individual stub files for each selected tool with usage examples
+- Authentication requirements and environment variable setup
+- Integration instructions for your agents
+- Generic custom tool template for building your own tools
+
+All stubs are included in both Core Files and Complete Project modes in the `tools/` directory.
+
 ### 6. Knowledge Base
 - Add knowledge sources (PDF, Text, CSV, JSON, Excel)
 - Configure embedder providers (17 options)
@@ -110,8 +120,9 @@ streamlit run app.py
 
 ### 8. Preview & Generate
 - Review generated code (agents.yaml, tasks.yaml, crew.py, main.py)
+- Preview dynamic tool stubs for selected tools
 - Validate configuration
-- Download complete project as ZIP
+- Download complete project as ZIP with tools/ and knowledge/ directories
 
 ## License
 

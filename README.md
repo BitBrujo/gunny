@@ -1,5 +1,10 @@
 # Gunny - CrewAI Companion
 
+![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![Python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12-blue.svg)
+![Docker](https://img.shields.io/badge/docker-supported-brightgreen.svg)
+![License](https://img.shields.io/badge/license-MIT-green.svg)
+
 A comprehensive Streamlit application for creating complete CrewAI projects with all available configuration options.
 
 <img width="4200" height="2512" alt="Gunny" src="https://github.com/user-attachments/assets/c91ad078-c547-42b8-b251-71ccc79c7436" />
@@ -54,6 +59,87 @@ If you prefer using pip:
 pip install -r requirements.txt
 streamlit run app.py
 ```
+
+## Running with Docker
+
+Gunny is available as a Docker image for easy deployment without installing dependencies.
+
+### Quick Start with Docker
+
+**Using Docker Hub:**
+```bash
+docker run -p 8501:8501 bitbrujo/gunny:latest
+```
+
+**Using GitHub Container Registry:**
+```bash
+docker run -p 8501:8501 ghcr.io/bitbrujo/gunny:latest
+```
+
+Then open your browser to `http://localhost:8501`
+
+### Using docker-compose
+
+1. **Download or create `docker-compose.yml`:**
+   ```yaml
+   version: '3.8'
+   services:
+     gunny:
+       image: bitbrujo/gunny:latest
+       container_name: gunny
+       ports:
+         - "8501:8501"
+       restart: unless-stopped
+   ```
+
+2. **Start the application:**
+   ```bash
+   docker-compose up -d
+   ```
+
+3. **View logs:**
+   ```bash
+   docker-compose logs -f
+   ```
+
+4. **Stop the application:**
+   ```bash
+   docker-compose down
+   ```
+
+### Building Locally
+
+If you want to build the Docker image yourself:
+
+```bash
+# Clone the repository
+cd gunny
+
+# Build the image
+docker build -t gunny .
+
+# Run the container
+docker run -p 8501:8501 gunny
+```
+
+### Docker Image Details
+
+- **Base Image:** Python 3.12-slim
+- **Platforms:** linux/amd64, linux/arm64
+- **Size:** ~200MB
+- **User:** Non-root user for security
+- **Health Check:** Automatic health monitoring
+- **Documentation:** Includes README.md and MAINTAINABILITY.md
+
+### Custom Port
+
+To use a different port (e.g., 8080):
+
+```bash
+docker run -p 8080:8501 bitbrujo/gunny:latest
+```
+
+Then access at `http://localhost:8080`
 
 ## Usage
 
@@ -143,6 +229,19 @@ For maintenance and sync procedures, see [MAINTAINABILITY.md](MAINTAINABILITY.md
 
 - **[MAINTAINABILITY.md](MAINTAINABILITY.md)**: How to keep Gunny in sync with CrewAI updates
 - **[TEST_REPORT_1.4.1.md](TEST_REPORT_1.4.1.md)**: Detailed testing results for CrewAI 1.4.1
+- **[CHANGELOG.md](CHANGELOG.md)**: Version history and release notes
+
+## Releases
+
+### Latest Release: v1.0.0
+
+This is the first stable release of Gunny! See the [v1.0.0 Release Notes](https://github.com/bitbrujo/gunny/releases/tag/v1.0.0) for complete details.
+
+**Docker Images:**
+- Docker Hub: `docker pull bitbrujo/gunny:1.0.0`
+- GitHub Container Registry: `docker pull ghcr.io/bitbrujo/gunny:1.0.0`
+
+View all releases on the [GitHub Releases page](https://github.com/bitbrujo/gunny/releases).
 
 ## Support
 

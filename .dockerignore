@@ -1,0 +1,57 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Claude Code
+.claude/
+CLAUDE.md
+
+# Environment and secrets
+.env
+.env.*
+*.key
+*.pem
+
+# OS
+.DS_Store
+Thumbs.db
+*.log
+
+# Documentation (included explicitly in Dockerfile)
+# README.md - included
+# MAINTAINABILITY.md - included
+# TEST_REPORT_*.md - included
+
+# Development
+run.sh
+*.md.backup
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Misc
+*.zip
+*.tar.gz
+temp/
+tmp/

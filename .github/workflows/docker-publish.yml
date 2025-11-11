@@ -29,7 +29,13 @@ jobs:
         id: meta
         run: |
           # Extract version from tag (e.g., v1.0.0 -> 1.0.0)
-          VERSION=${GITHUB_REF#refs/tags/v}
+          # Handle both tag pushes and manual workflow dispatches
+          if [[ "$GITHUB_REF" == refs/tags/* ]]; then
+            VERSION=${GITHUB_REF#refs/tags/v}
+          else
+            # For manual triggers, use git to find the latest tag
+            VERSION=$(git describe --tags --abbrev=0 2>/dev/null | sed 's/^v//' || echo "dev")
+          fi
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
 
           # Set image tags (convert repository owner to lowercase for Docker registry)

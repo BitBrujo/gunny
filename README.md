@@ -142,7 +142,6 @@ For maintenance and sync procedures, see [MAINTAINABILITY.md](MAINTAINABILITY.md
 ## Documentation
 
 - **[MAINTAINABILITY.md](MAINTAINABILITY.md)**: How to keep Gunny in sync with CrewAI updates
-- **[CLAUDE.md](CLAUDE.md)**: AI assistant guidance for working with the codebase
 - **[TEST_REPORT_1.4.1.md](TEST_REPORT_1.4.1.md)**: Detailed testing results for CrewAI 1.4.1
 
 ## Support

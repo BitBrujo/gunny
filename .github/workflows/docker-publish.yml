@@ -32,9 +32,10 @@ jobs:
           VERSION=${GITHUB_REF#refs/tags/v}
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
 
-          # Set image tags
+          # Set image tags (convert repository owner to lowercase for Docker registry)
           DOCKERHUB_IMAGE="${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}"
-          GHCR_IMAGE="${{ env.REGISTRY_GHCR }}/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}"
+          REPO_OWNER_LOWER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          GHCR_IMAGE="${{ env.REGISTRY_GHCR }}/${REPO_OWNER_LOWER}/${{ env.IMAGE_NAME }}"
 
           echo "dockerhub_image=${DOCKERHUB_IMAGE}" >> $GITHUB_OUTPUT
           echo "ghcr_image=${GHCR_IMAGE}" >> $GITHUB_OUTPUT

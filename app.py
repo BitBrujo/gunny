@@ -585,19 +585,32 @@ with tab1:
     st.markdown("### Project Structure Preview")
 
     if st.session_state.generation_mode == "core_files":
+        # Get count of selected tools for display
+        selected_tool_count = len(st.session_state.get("selected_tools", []))
+        tool_files_note = f"(+{selected_tool_count} tool stubs)" if selected_tool_count > 0 else "(+1 template)"
+
         st.code(
             f"""
 {project_name}/
 └── src/{project_name}/
     ├── main.py
     ├── crew.py
-    └── config/
-        ├── agents.yaml
-        └── tasks.yaml
+    ├── config/
+    │   ├── agents.yaml
+    │   └── tasks.yaml
+    ├── tools/ {tool_files_note}
+    │   ├── __init__.py
+    │   └── custom_tool.py (+ tool stubs)
+    └── knowledge/
+        └── README.md
 """,
             language="text",
         )
     else:
+        # Get count of selected tools for display
+        selected_tool_count = len(st.session_state.get("selected_tools", []))
+        tool_files_note = f"(+{selected_tool_count} tool stubs)" if selected_tool_count > 0 else ""
+
         st.code(
             f"""
 {project_name}/
@@ -612,9 +625,9 @@ with tab1:
     ├── config/
     │   ├── agents.yaml
     │   └── tasks.yaml
-    ├── tools/
+    ├── tools/ {tool_files_note}
     │   ├── __init__.py
-    │   └── custom_tool.py
+    │   └── custom_tool.py (+ tool stubs)
     └── knowledge/
         └── README.md
 """,
@@ -1138,6 +1151,8 @@ with tab8:
                 st.session_state.generation_mode,
                 st.session_state.get("enable_langsmith", False),
                 st.session_state.get("langsmith_project", "my-crew-project"),
+                st.session_state.get("selected_tools", []),
+                TOOLS_CATALOG,
             )
 
             # Create ZIP file
@@ -1161,12 +1176,16 @@ with tab8:
 
             # Customize success message based on mode
             if st.session_state.generation_mode == "core_files":
+                tool_count = len(st.session_state.get("selected_tools", []))
+                tool_msg = f" + {tool_count} tool stubs" if tool_count > 0 else " + tool template"
                 st.success(
-                    "Core files generated successfully! Download includes: agents.yaml, tasks.yaml, crew.py, main.py"
+                    f"Core files generated successfully! Download includes: agents.yaml, tasks.yaml, crew.py, main.py{tool_msg}, and knowledge directory"
                 )
             else:
+                tool_count = len(st.session_state.get("selected_tools", []))
+                tool_msg = f" with {tool_count} tool stubs" if tool_count > 0 else ""
                 st.success(
-                    "Project generated successfully! Download the ZIP file and extract it to get started."
+                    f"Project generated successfully{tool_msg}! Download the ZIP file and extract it to get started."
                 )
 
             st.markdown("---")
@@ -1294,9 +1313,13 @@ Traces will appear in your LangSmith dashboard for debugging and monitoring.
 2. **Copy the files** to your project structure:
    - Place `agents.yaml` and `tasks.yaml` in your `config/` directory
    - Place `crew.py` and `main.py` in your source directory
-3. **Update imports** in your code if needed
-4. **Configure your `.env`** file with required API keys
-5. **Run your crew:**
+   - Copy the `tools/` directory with generated tool stubs
+   - Copy the `knowledge/` directory for RAG data sources
+3. **Review generated tool stubs** in `tools/` directory and configure as needed
+4. **Add knowledge base files** to `knowledge/` directory (PDFs, text files, etc.)
+5. **Update imports** in your code if needed
+6. **Configure your `.env`** file with required API keys
+7. **Run your crew:**
    ```bash
    crewai run
    ```
@@ -1312,9 +1335,11 @@ Traces will appear in your LangSmith dashboard for debugging and monitoring.
    ```bash
    crewai install
    ```
-4. **Configure environment variables:**
+4. **Review generated tool stubs** in `src/{project_name}/tools/` directory
+5. **Add knowledge base files** to `src/{project_name}/knowledge/` directory (optional)
+6. **Configure environment variables:**
    - Edit the `.env` file with your API keys
-5. **Run your crew:**
+7. **Run your crew:**
    ```bash
    crewai run
    ```

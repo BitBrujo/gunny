@@ -16,6 +16,7 @@ from generators.python_generator import (
     generate_crew_py,
     generate_main_py,
     generate_init_py,
+    generate_tool_stubs,
 )
 
 
@@ -67,7 +68,9 @@ def generate_project_structure(
     python_version: str = "3.10",
     generation_mode: str = "complete_project",
     enable_langsmith: bool = False,
-    langsmith_project: str = "my-crew-project"
+    langsmith_project: str = "my-crew-project",
+    selected_tools: List[str] = None,
+    tools_catalog: Dict[str, List[Dict[str, Any]]] = None
 ) -> Dict[str, str]:
     """
     Generate complete project structure as a dictionary of file paths to contents.
@@ -84,6 +87,8 @@ def generate_project_structure(
         generation_mode: "core_files" or "complete_project" (default: "complete_project")
         enable_langsmith: Whether to include LangSmith configuration
         langsmith_project: LangSmith project name
+        selected_tools: List of selected tool names (for dynamic stub generation)
+        tools_catalog: Complete tools catalog from constants.py
 
     Returns:
         Dictionary mapping file paths to their contents
@@ -106,49 +111,22 @@ def generate_project_structure(
     files[f"{src_dir}/config/agents.yaml"] = generate_agents_yaml(agents)
     files[f"{src_dir}/config/tasks.yaml"] = generate_tasks_yaml(tasks)
 
-    # Additional files only for complete project mode
-    if generation_mode == "complete_project":
-        # Root level files
-        files[".gitignore"] = generate_gitignore()
-        files["README.md"] = generate_readme(project_name, description, enable_langsmith)
-        files["pyproject.toml"] = generate_pyproject_toml(project_name, python_version, enable_langsmith)
-        files[".env"] = generate_env_file(env_vars, enable_langsmith, langsmith_project)
+    # Tools directory (always included with dynamic stub generation)
+    files[f"{src_dir}/tools/__init__.py"] = '"""\nCustom tools for the crew.\n"""\n'
 
-        # Source directory __init__.py
-        files[f"{src_dir}/__init__.py"] = generate_init_py(project_name)
+    # Generate tool stubs based on selected tools
+    if selected_tools is not None and tools_catalog is not None:
+        tool_stubs = generate_tool_stubs(selected_tools, tools_catalog)
+    else:
+        # Fallback to generic template if no tools info provided
+        tool_stubs = generate_tool_stubs([], {})
 
-        # Tools directory
-        files[f"{src_dir}/tools/__init__.py"] = '"""\nCustom tools for the crew.\n"""\n'
-        files[f"{src_dir}/tools/custom_tool.py"] = '''"""
-Example custom tool.
+    for filename, content in tool_stubs:
+        files[f"{src_dir}/tools/{filename}"] = content
 
-You can create your own custom tools here.
-"""
-
-from crewai.tools import BaseTool
-from typing import Type
-from pydantic import BaseModel, Field
-
-
-class MyCustomToolInput(BaseModel):
-    """Input schema for MyCustomTool."""
-    argument: str = Field(..., description="Description of the input argument")
-
-
-class MyCustomTool(BaseTool):
-    name: str = "My Custom Tool"
-    description: str = "Description of what this tool does"
-    args_schema: Type[BaseModel] = MyCustomToolInput
-
-    def _run(self, argument: str) -> str:
-        """Execute the tool."""
-        # Implement your custom logic here
-        return f"Processed: {argument}"
-'''
-
-        # Knowledge directory
-        files[f"{src_dir}/knowledge/.gitkeep"] = ""
-        files[f"{src_dir}/knowledge/README.md"] = """# Knowledge Base
+    # Knowledge directory (always included)
+    files[f"{src_dir}/knowledge/.gitkeep"] = ""
+    files[f"{src_dir}/knowledge/README.md"] = """# Knowledge Base
 
 Place your knowledge base files here:
 - PDF documents
@@ -159,6 +137,17 @@ Place your knowledge base files here:
 
 These files can be used by agents to access domain-specific information.
 """
+
+    # Additional files only for complete project mode
+    if generation_mode == "complete_project":
+        # Root level files
+        files[".gitignore"] = generate_gitignore()
+        files["README.md"] = generate_readme(project_name, description, enable_langsmith)
+        files["pyproject.toml"] = generate_pyproject_toml(project_name, python_version, enable_langsmith)
+        files[".env"] = generate_env_file(env_vars, enable_langsmith, langsmith_project)
+
+        # Source directory __init__.py
+        files[f"{src_dir}/__init__.py"] = generate_init_py(project_name)
 
     return files
 

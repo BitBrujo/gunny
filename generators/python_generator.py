@@ -1,6 +1,6 @@
 """Python code generation for CrewAI project files."""
 
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Tuple
 
 
 def generate_crew_py(
@@ -342,3 +342,168 @@ from {project_name}.crew import {("".join(word.capitalize() for word in project_
 
 __all__ = ['{("".join(word.capitalize() for word in project_name.split("_")))}Crew']
 '''
+
+
+def generate_tool_stubs(
+    selected_tools: List[str],
+    tools_catalog: Dict[str, List[Dict[str, Any]]]
+) -> List[Tuple[str, str]]:
+    """
+    Generate tool stub files based on selected tools.
+
+    Args:
+        selected_tools: List of selected tool names
+        tools_catalog: Complete tools catalog from constants.py
+
+    Returns:
+        List of tuples (filename, content) for each tool stub
+    """
+    if not selected_tools:
+        # Return generic custom tool template if no tools selected
+        return [("custom_tool.py", _generate_generic_tool_template())]
+
+    tool_stubs = []
+
+    # Create a lookup dictionary for tools
+    tools_lookup = {}
+    for category, tools in tools_catalog.items():
+        for tool in tools:
+            tools_lookup[tool["name"]] = {
+                "category": category,
+                **tool
+            }
+
+    # Generate stub for each selected tool
+    for tool_name in selected_tools:
+        if tool_name not in tools_lookup:
+            continue
+
+        tool_info = tools_lookup[tool_name]
+        stub_content = _generate_tool_stub(tool_name, tool_info)
+
+        # Create filename: tool_name_tool.py (sanitized)
+        filename = f"{tool_name.lower().replace('tool', '').rstrip('_')}_tool.py"
+        tool_stubs.append((filename, stub_content))
+
+    # Always include a generic template as well
+    tool_stubs.append(("custom_tool.py", _generate_generic_tool_template()))
+
+    return tool_stubs
+
+
+def _generate_generic_tool_template() -> str:
+    """Generate a generic custom tool template."""
+    return '''"""
+Example custom tool.
+
+You can create your own custom tools here.
+"""
+
+from crewai.tools import BaseTool
+from typing import Type
+from pydantic import BaseModel, Field
+
+
+class MyCustomToolInput(BaseModel):
+    """Input schema for MyCustomTool."""
+    argument: str = Field(..., description="Description of the input argument")
+
+
+class MyCustomTool(BaseTool):
+    name: str = "My Custom Tool"
+    description: str = "Description of what this tool does"
+    args_schema: Type[BaseModel] = MyCustomToolInput
+
+    def _run(self, argument: str) -> str:
+        """Execute the tool."""
+        # Implement your custom logic here
+        return f"Processed: {argument}"
+'''
+
+
+def _generate_tool_stub(tool_name: str, tool_info: Dict[str, Any]) -> str:
+    """
+    Generate a stub file for a specific tool.
+
+    Args:
+        tool_name: Name of the tool
+        tool_info: Tool information from catalog including category, description, requires_auth, env_vars
+
+    Returns:
+        String content for the tool stub file
+    """
+    description = tool_info.get("description", "")
+    requires_auth = tool_info.get("requires_auth", False)
+    env_vars = tool_info.get("env_vars", [])
+    auth_note = tool_info.get("auth_note", "")
+    category = tool_info.get("category", "Unknown")
+
+    # Build authentication section
+    auth_section = ""
+    if requires_auth and env_vars:
+        auth_section = f"""
+## Authentication Required
+
+This tool requires the following environment variables:
+{chr(10).join(f"- {var}" for var in env_vars)}
+"""
+        if auth_note:
+            auth_section += f"""
+{auth_note}
+"""
+
+    # Generate the stub content
+    content = f'''"""
+{tool_name} - {category}
+
+{description}
+{auth_section}
+## Usage Example
+
+```python
+from crewai_tools import {tool_name}
+
+# Initialize the tool'''
+
+    if requires_auth and env_vars:
+        content += f'''
+# Make sure environment variables are set:
+'''
+        for var in env_vars:
+            content += f'''
+# {var} = "your_{var.lower()}_here"
+'''
+
+    content += f'''
+
+tool = {tool_name}()
+
+# Use in agent configuration:
+# tools=[{tool_name}()]
+```
+
+## Configuration
+
+To use this tool in your agents, import it and add to the tools list:
+
+```python
+from crewai_tools import {tool_name}
+
+@agent
+def my_agent(self) -> Agent:
+    return Agent(
+        config=self.agents_config['my_agent'],
+        tools=[{tool_name}()],  # Add tool here
+        verbose=True
+    )
+```
+"""
+
+# Import statement for reference
+from crewai_tools import {tool_name}
+
+# Tool is ready to use - no additional configuration needed in this file
+# Simply import and use in your crew.py agent definitions
+'''
+
+    return content

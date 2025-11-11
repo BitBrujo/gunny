@@ -1,7 +1,6 @@
 # Gunny Test Report - CrewAI v1.4.1 Compatibility
 
 **Test Date:** 2025-11-07
-**Tester:** Claude Code (Automated)
 **CrewAI Version:** 1.4.1
 **Gunny Version:** Latest (main branch)
 **Environment:** Python 3.13.7, Linux
@@ -361,7 +360,6 @@ The generated projects are well-formed, syntactically valid, and ready for use w
 ## Sign-Off
 
 **Test Status:** ✅ **PASS**
-**Tester:** Claude Code (Automated Testing)
 **Date:** 2025-11-07
 **Next Steps:** Update TESTED_CREWAI_VERSIONS to include 1.4.1
 

@@ -82,7 +82,6 @@ Then open your browser to `http://localhost:8501`
 
 1. **Download or create `docker-compose.yml`:**
    ```yaml
-   version: '3.8'
    services:
      gunny:
        image: bitbrujo/gunny:latest

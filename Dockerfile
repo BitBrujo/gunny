@@ -32,10 +32,8 @@ COPY --chown=gunny:gunny utils/ ./utils/
 # Copy documentation (explicitly include/exclude)
 COPY --chown=gunny:gunny README.md .
 COPY --chown=gunny:gunny MAINTAINABILITY.md .
+COPY --chown=gunny:gunny TEST_REPORT_1.4.1.md .
 # CLAUDE.md is excluded via .dockerignore
-
-# Copy test reports if they exist
-COPY --chown=gunny:gunny TEST_REPORT*.md ./ 2>/dev/null || true
 
 # Switch to non-root user
 USER gunny

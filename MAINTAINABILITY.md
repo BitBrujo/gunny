@@ -200,7 +200,6 @@ The Streamlit sidebar shows:
 ## Additional Documentation
 
 - **`README.md`**: User guide and installation
-- **`CLAUDE.md`**: Development guide for AI assistants
 - **`TEST_REPORT_1.4.1.md`**: Testing results for CrewAI 1.4.1
 
 ---
